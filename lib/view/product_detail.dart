@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
+import 'package:flutter_node_auth/view/product_image_detail.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get/instance_manager.dart';
@@ -31,7 +34,7 @@ class _ProductDetailState extends State<ProductDetail> {
         productImages.add("$kbaseUrl/${Get.find<ApiController>().products[widget.selectedProductIndex].productImages![i]}");
       });
     }
-    print(productImages.length);
+    print("Images length: " + productImages.length.toString());
   }
 
   @override
@@ -61,6 +64,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         verticalAlignment: Alignment.topCenter,
                         onTap: (index) {
                           print('Tapped on page $index');
+                          Get.to(() => ProductImageDetail(selectedImageIndex: index, productImages: productImages), transition: Transition.cupertino);
                         },
                       ),
                     ),

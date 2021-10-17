@@ -8,6 +8,7 @@ import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/model/user.dart';
 import 'package:flutter_node_auth/view/auth_choice.dart';
 import 'package:flutter_node_auth/view/home_screen.dart';
+import 'package:flutter_node_auth/view/loading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -88,6 +89,7 @@ class AuthController extends GetxController {
     Dio dio = Dio();
 
     try {
+      Get.to(() => const Loading(), transition: Transition.fade);
       final response = await dio.post(endPoint, data: formData);
       if (response.statusCode == 201) {
         _currentUser = User.fromJson(response.toString());
@@ -107,21 +109,27 @@ class AuthController extends GetxController {
 
   //signin
   Future<bool> signInUser(String email, String password) async {
-    final response = await http.post(
-      Uri.parse(kbaseUrl + '/user/signin'),
-      headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
-      body: jsonEncode(<String, String>{'email': email.trim(), 'password': password.trim()}),
-    );
-    if (response.statusCode == 200) {
-      _currentUser = User.fromJson(response.body);
-      await _storage.write(key: _tokenKey, value: _currentUser!.token);
-      print('fetching products');
-      bool result = await Get.find<ApiController>().getProducts(true);
-      if (result == true) {
-        print(_currentUser!.userId);
-        return true;
+    try {
+      Get.to(() => const Loading(), transition: Transition.fade);
+      final response = await http.post(
+        Uri.parse(kbaseUrl + '/user/signin'),
+        headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
+        body: jsonEncode(<String, String>{'email': email.trim(), 'password': password.trim()}),
+      );
+      if (response.statusCode == 200) {
+        _currentUser = User.fromJson(response.body);
+        await _storage.write(key: _tokenKey, value: _currentUser!.token);
+        print('fetching products');
+        bool result = await Get.find<ApiController>().getProducts(true);
+        if (result == true) {
+          print(_currentUser!.userId);
+          return true;
+        }
       }
+    } catch (e) {
+      print(e);
     }
+
     return false;
   }
 
