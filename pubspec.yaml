@@ -28,8 +28,8 @@ dependencies:
   google_mobile_ads: ^0.13.5
   #for displaying images in carousel form
   carousel_images: ^1.1.2
-  #for zooming images and displaying them clearly
-  photo_view: ^0.13.0
+  #for page transition animation
+  transition: ^2.0.2
   
 dev_dependencies:
   flutter_test:

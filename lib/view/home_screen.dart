@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
@@ -187,6 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarIconBrightness: Brightness.dark));
     final size = MediaQuery.of(context).size;
 
     return Scaffold(

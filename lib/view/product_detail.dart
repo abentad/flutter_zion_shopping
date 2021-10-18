@@ -1,14 +1,14 @@
 import 'package:carousel_images/carousel_images.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_node_auth/constants.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/view/product_image_detail.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get/instance_manager.dart';
+import 'package:transition/transition.dart';
 
 class ProductDetail extends StatefulWidget {
   const ProductDetail({Key? key, required this.selectedProductIndex}) : super(key: key);
@@ -40,6 +40,7 @@ class _ProductDetailState extends State<ProductDetail> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarIconBrightness: Brightness.dark));
 
     return Scaffold(
       body: GetBuilder<ApiController>(
@@ -64,7 +65,14 @@ class _ProductDetailState extends State<ProductDetail> {
                         verticalAlignment: Alignment.topCenter,
                         onTap: (index) {
                           print('Tapped on page $index');
-                          Get.to(() => ProductImageDetail(selectedImageIndex: index, productImages: productImages), transition: Transition.cupertino);
+                          Navigator.push(
+                            context,
+                            Transition(
+                              child: ProductImageDetail(selectedImageIndex: index, productImages: productImages),
+                              transitionEffect: TransitionEffect.FADE,
+                              curve: Curves.easeIn,
+                            ),
+                          );
                         },
                       ),
                     ),

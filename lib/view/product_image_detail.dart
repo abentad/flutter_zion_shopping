@@ -1,6 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:photo_view/photo_view.dart';
 
 class ProductImageDetail extends StatelessWidget {
   const ProductImageDetail({Key? key, required this.productImages, required this.selectedImageIndex}) : super(key: key);
@@ -12,11 +12,28 @@ class ProductImageDetail extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.light));
 
     return Scaffold(
-      body: PhotoView(
-        imageProvider: NetworkImage(productImages[selectedImageIndex]),
-        minScale: PhotoViewComputedScale.contained * 0.8,
-        maxScale: PhotoViewComputedScale.covered * 2,
-        enableRotation: true,
+      backgroundColor: Colors.black,
+      body: SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: double.infinity,
+              color: Colors.white,
+              child: GestureDetector(
+                onDoubleTap: () {},
+                child: InteractiveViewer(
+                  maxScale: 3.0,
+                  child: CachedNetworkImage(
+                    imageUrl: productImages[selectedImageIndex],
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
