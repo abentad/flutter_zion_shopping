@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/view/home_screen.dart';
-import 'package:flutter_node_auth/view/sign_in.dart';
+import 'package:flutter_node_auth/view/auth/sign_in.dart';
 import 'package:get/get.dart';
 import 'package:get/instance_manager.dart';
 import 'package:image_picker/image_picker.dart';

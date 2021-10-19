@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_node_auth/constants.dart';
+import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:get/get.dart';
 

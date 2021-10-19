@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_node_auth/view/sign_in.dart';
-import 'package:flutter_node_auth/view/sign_up.dart';
+import 'package:flutter_node_auth/view/auth/sign_in.dart';
+import 'package:flutter_node_auth/view/auth/sign_up.dart';
 
 class AuthChoice extends StatelessWidget {
   const AuthChoice({Key? key}) : super(key: key);

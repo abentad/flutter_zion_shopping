@@ -3,12 +3,12 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_node_auth/constants.dart';
+import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/model/user.dart';
-import 'package:flutter_node_auth/view/auth_choice.dart';
+import 'package:flutter_node_auth/view/auth/auth_choice.dart';
 import 'package:flutter_node_auth/view/home_screen.dart';
-import 'package:flutter_node_auth/view/loading.dart';
+import 'package:flutter_node_auth/view/components/loading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
