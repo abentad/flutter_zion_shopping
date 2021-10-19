@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class ProductImageDetail extends StatelessWidget {
   const ProductImageDetail({Key? key, required this.productImages, required this.selectedImageIndex}) : super(key: key);
@@ -9,10 +8,10 @@ class ProductImageDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.light));
+    final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       body: SizedBox(
         width: double.infinity,
         child: Column(
@@ -20,6 +19,7 @@ class ProductImageDetail extends StatelessWidget {
           children: [
             Container(
               width: double.infinity,
+              height: size.height,
               color: Colors.white,
               child: GestureDetector(
                 onDoubleTap: () {},
@@ -27,7 +27,7 @@ class ProductImageDetail extends StatelessWidget {
                   maxScale: 3.0,
                   child: CachedNetworkImage(
                     imageUrl: productImages[selectedImageIndex],
-                    fit: BoxFit.fill,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),

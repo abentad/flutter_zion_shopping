@@ -4,7 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/model/product.dart';
+import 'package:flutter_node_auth/view/home_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
 
@@ -53,6 +55,8 @@ class ApiController extends GetxController {
                   name: response.data['results'][i]['name'],
                   datePosted: response.data['results'][i]['datePosted'],
                   description: response.data['results'][i]['description'],
+                  price: response.data['results'][i]['price'],
+                  category: response.data['results'][i]['category'],
                   productImages: response.data['results'][i]['productImages'],
                 ),
               );
@@ -77,6 +81,8 @@ class ApiController extends GetxController {
                     name: response.data['results'][i]['name'],
                     datePosted: response.data['results'][i]['datePosted'],
                     description: response.data['results'][i]['description'],
+                    price: response.data['results'][i]['price'],
+                    category: response.data['results'][i]['category'],
                     productImages: response.data['results'][i]['productImages'],
                   ),
                 );
@@ -103,7 +109,7 @@ class ApiController extends GetxController {
     return false;
   }
 
-  Future<bool> postProduct(String name, String description, List<File> imageFiles) async {
+  Future<bool> postProduct(String name, String description, String price, String category, List<File> imageFiles) async {
     String? _token = await _storage.read(key: _tokenKey);
     String posterId = Get.find<AuthController>().currentUser!.userId.toString();
     String posterName = Get.find<AuthController>().currentUser!.username.toString();
@@ -122,6 +128,8 @@ class ApiController extends GetxController {
           "posterPhoneNumber": posterPhoneNumber,
           "name": name,
           "description": description,
+          "price": price,
+          "category": category,
           "gallery": _images,
         },
       );
@@ -139,13 +147,17 @@ class ApiController extends GetxController {
       try {
         final response = await _dio.post('/data/post', data: formData);
         if (response.statusCode == 201) {
-          return true;
+          bool result = await getProducts(true);
+          if (result) {
+            Get.offAll(() => const HomeScreen());
+            return true;
+          }
         }
       } catch (e) {
         print(e);
       }
     } else {
-      print('no token found skippng fetch');
+      print('no token found skippng post');
     }
 
     return false;

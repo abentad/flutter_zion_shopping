@@ -9,19 +9,35 @@ class Product {
   String? posterPhoneNumber;
   String? name;
   String? description;
+  String? price;
+  String? category;
   String? datePosted;
   List<dynamic>? productImages;
-  Product({this.sId, this.posterId, this.posterName, this.posterPhoneNumber, this.name, this.description, this.datePosted, this.productImages});
+  Product({
+    this.sId,
+    this.posterId,
+    this.posterName,
+    this.posterPhoneNumber,
+    this.name,
+    this.description,
+    this.price,
+    this.category,
+    this.datePosted,
+    this.productImages,
+  });
 
-  Product copyWith(
-      {String? sId,
-      String? posterId,
-      String? posterName,
-      String? posterPhoneNumber,
-      String? name,
-      String? description,
-      String? datePosted,
-      List<dynamic>? productImages}) {
+  Product copyWith({
+    String? sId,
+    String? posterId,
+    String? posterName,
+    String? posterPhoneNumber,
+    String? name,
+    String? description,
+    String? price,
+    String? category,
+    String? datePosted,
+    List<dynamic>? productImages,
+  }) {
     return Product(
       sId: sId ?? this.sId,
       posterId: posterId ?? this.posterId,
@@ -29,6 +45,8 @@ class Product {
       posterPhoneNumber: posterPhoneNumber ?? this.posterPhoneNumber,
       name: name ?? this.name,
       description: description ?? this.description,
+      price: price ?? this.price,
+      category: category ?? this.category,
       datePosted: datePosted ?? this.datePosted,
       productImages: productImages ?? this.productImages,
     );
@@ -42,6 +60,8 @@ class Product {
       'posterPhoneNumber': posterPhoneNumber,
       'name': name,
       'description': description,
+      'price': price,
+      'category': category,
       'datePosted': datePosted,
       'productImages': productImages,
     };
@@ -55,6 +75,8 @@ class Product {
       posterPhoneNumber: map['posterPhoneNumber'],
       name: map['name'],
       description: map['description'],
+      price: map['price'],
+      category: map['category'],
       datePosted: map['datePosted'],
       productImages: List<dynamic>.from(map['productImages']),
     );
@@ -66,7 +88,7 @@ class Product {
 
   @override
   String toString() {
-    return 'Product(sId: $sId, posterId: $posterId, posterName: $posterName, posterPhoneNumber: $posterPhoneNumber, name: $name, description: $description, datePosted: $datePosted, productImages: $productImages)';
+    return 'Product(sId: $sId, posterId: $posterId, posterName: $posterName, posterPhoneNumber: $posterPhoneNumber, name: $name, description: $description, price: $price, category: $category, datePosted: $datePosted, productImages: $productImages)';
   }
 
   @override
@@ -80,6 +102,8 @@ class Product {
         other.posterPhoneNumber == posterPhoneNumber &&
         other.name == name &&
         other.description == description &&
+        other.price == price &&
+        other.category == category &&
         other.datePosted == datePosted &&
         listEquals(other.productImages, productImages);
   }
@@ -92,6 +116,8 @@ class Product {
         posterPhoneNumber.hashCode ^
         name.hashCode ^
         description.hashCode ^
+        price.hashCode ^
+        category.hashCode ^
         datePosted.hashCode ^
         productImages.hashCode;
   }

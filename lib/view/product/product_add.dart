@@ -17,6 +17,8 @@ class ProductAdd extends StatefulWidget {
 class _ProductAddState extends State<ProductAdd> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
   final List<File> _imageFiles = [];
 
   @override
@@ -41,12 +43,10 @@ class _ProductAddState extends State<ProductAdd> {
                       onPressed: () async {
                         FocusScope.of(context).unfocus();
                         Get.to(() => const Loading(), transition: Transition.fade);
-                        bool result = await Get.find<ApiController>().postProduct(_nameController.text, _descriptionController.text, _imageFiles);
-                        Get.find<ApiController>().getProducts(true);
-                        Get.back();
+                        bool result = await Get.find<ApiController>().postProduct(
+                            _nameController.text, _descriptionController.text, _priceController.text.trim(), _categoryController.text.trim(), _imageFiles);
                         if (result) {
                           print('posted');
-                          Get.back();
                         } else {
                           print('unable to post');
                         }
@@ -65,6 +65,39 @@ class _ProductAddState extends State<ProductAdd> {
                     filled: true,
                     fillColor: const Color(0xfff2f2f2),
                     hintText: "Name",
+                    hintStyle: const TextStyle(fontSize: 14.0, color: Colors.grey),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
+                  ),
+                ),
+                SizedBox(height: size.height * 0.02),
+                TextFormField(
+                  controller: _priceController,
+                  cursorColor: Colors.black,
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(fontSize: 18.0),
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                    filled: true,
+                    fillColor: const Color(0xfff2f2f2),
+                    hintText: "Price",
+                    hintStyle: const TextStyle(fontSize: 14.0, color: Colors.grey),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
+                  ),
+                ),
+                SizedBox(height: size.height * 0.02),
+                TextFormField(
+                  controller: _categoryController,
+                  cursorColor: Colors.black,
+                  style: const TextStyle(fontSize: 18.0),
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                    filled: true,
+                    fillColor: const Color(0xfff2f2f2),
+                    hintText: "Category",
                     hintStyle: const TextStyle(fontSize: 14.0, color: Colors.grey),
                     enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
                     focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
@@ -171,6 +204,7 @@ class _ProductAddState extends State<ProductAdd> {
                                             padding: const EdgeInsets.symmetric(horizontal: 20.0),
                                             child: MaterialButton(
                                               onPressed: () async {
+                                                FocusScope.of(context).unfocus();
                                                 File pickedFile = await Get.find<AuthController>().chooseImage(ImageSource.camera);
                                                 File croppedFile = await Get.find<AuthController>().cropImage(pickedFile);
                                                 setState(() {
@@ -190,12 +224,12 @@ class _ProductAddState extends State<ProductAdd> {
                                             padding: const EdgeInsets.symmetric(horizontal: 20.0),
                                             child: MaterialButton(
                                               onPressed: () async {
+                                                FocusScope.of(context).unfocus();
                                                 File pickedFile = await Get.find<AuthController>().chooseImage(ImageSource.gallery);
                                                 File croppedFile = await Get.find<AuthController>().cropImage(pickedFile);
                                                 setState(() {
                                                   _imageFiles.add(croppedFile);
                                                 });
-
                                                 Get.back();
                                               },
                                               color: Colors.black,

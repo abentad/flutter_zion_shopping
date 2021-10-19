@@ -53,7 +53,7 @@ class AuthController extends GetxController {
     File? cropped = await ImageCropper.cropImage(
       sourcePath: imageFile.path,
       // aspectRatio: const CropAspectRatio(ratioX: 1080.0, ratioY: 1920.0),
-      compressQuality: 40,
+      compressQuality: 60,
       maxHeight: 1280,
       maxWidth: 720,
       aspectRatioPresets: [

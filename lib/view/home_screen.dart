@@ -401,7 +401,10 @@ class ProductCard extends StatelessWidget {
                 Text(controller.products[index].name!.capitalize.toString(),
                     style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black)),
                 SizedBox(height: size.height * 0.01),
-                const Text('\$200.00', style: TextStyle(fontSize: 15.0, color: Colors.grey)),
+                Text(
+                  controller.products[index].price == null ? '0 birr' : '${controller.products[index].price} birr',
+                  style: const TextStyle(fontSize: 15.0, color: Colors.grey),
+                ),
                 SizedBox(height: size.height * 0.02),
               ],
             ),
