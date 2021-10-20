@@ -26,12 +26,13 @@ dependencies:
   pull_to_refresh: ^2.0.0
   #for displaying google ads
   google_mobile_ads: ^0.13.5
-  #for displaying images in carousel form
-  carousel_images: ^1.1.2
   #for page transition animation
   transition: ^2.0.2
   #for modifying date object
   intl: ^0.17.0
+  #for displaying images in carousel form
+  carousel_slider: ^4.0.0
+  smooth_page_indicator: ^1.0.0+2
   
 dev_dependencies:
   flutter_test:
