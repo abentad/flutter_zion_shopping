@@ -7,6 +7,7 @@ class Product {
   String? posterId;
   String? posterName;
   String? posterPhoneNumber;
+  String? posterProfileAvatar;
   String? name;
   String? description;
   String? price;
@@ -18,6 +19,7 @@ class Product {
     this.posterId,
     this.posterName,
     this.posterPhoneNumber,
+    this.posterProfileAvatar,
     this.name,
     this.description,
     this.price,
@@ -31,6 +33,7 @@ class Product {
     String? posterId,
     String? posterName,
     String? posterPhoneNumber,
+    String? posterProfileAvatar,
     String? name,
     String? description,
     String? price,
@@ -43,6 +46,7 @@ class Product {
       posterId: posterId ?? this.posterId,
       posterName: posterName ?? this.posterName,
       posterPhoneNumber: posterPhoneNumber ?? this.posterPhoneNumber,
+      posterProfileAvatar: posterProfileAvatar ?? this.posterProfileAvatar,
       name: name ?? this.name,
       description: description ?? this.description,
       price: price ?? this.price,
@@ -58,6 +62,7 @@ class Product {
       'posterId': posterId,
       'posterName': posterName,
       'posterPhoneNumber': posterPhoneNumber,
+      'posterProfileAvatar': posterProfileAvatar,
       'name': name,
       'description': description,
       'price': price,
@@ -73,6 +78,7 @@ class Product {
       posterId: map['posterId'],
       posterName: map['posterName'],
       posterPhoneNumber: map['posterPhoneNumber'],
+      posterProfileAvatar: map['posterProfileAvatar'],
       name: map['name'],
       description: map['description'],
       price: map['price'],
@@ -88,7 +94,7 @@ class Product {
 
   @override
   String toString() {
-    return 'Product(sId: $sId, posterId: $posterId, posterName: $posterName, posterPhoneNumber: $posterPhoneNumber, name: $name, description: $description, price: $price, category: $category, datePosted: $datePosted, productImages: $productImages)';
+    return 'Product(sId: $sId, posterId: $posterId, posterName: $posterName, posterPhoneNumber: $posterPhoneNumber, posterProfileAvatar: $posterProfileAvatar, name: $name, description: $description, price: $price, category: $category, datePosted: $datePosted, productImages: $productImages)';
   }
 
   @override
@@ -100,6 +106,7 @@ class Product {
         other.posterId == posterId &&
         other.posterName == posterName &&
         other.posterPhoneNumber == posterPhoneNumber &&
+        other.posterProfileAvatar == posterProfileAvatar &&
         other.name == name &&
         other.description == description &&
         other.price == price &&
@@ -114,6 +121,7 @@ class Product {
         posterId.hashCode ^
         posterName.hashCode ^
         posterPhoneNumber.hashCode ^
+        posterProfileAvatar.hashCode ^
         name.hashCode ^
         description.hashCode ^
         price.hashCode ^

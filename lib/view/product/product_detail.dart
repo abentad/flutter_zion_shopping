@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_images/carousel_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_node_auth/view/product/product_image_detail.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get/instance_manager.dart';
+import 'package:intl/intl.dart';
 import 'package:transition/transition.dart';
 
 class ProductDetail extends StatefulWidget {
@@ -50,12 +52,15 @@ class _ProductDetailState extends State<ProductDetail> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    //Carousel image
                     Container(
                       width: double.infinity,
                       decoration: const BoxDecoration(
                         color: Color(0xfff2f2f2),
                       ),
                       child: CarouselImages(
+                        viewportFraction: 1.0,
+                        borderRadius: 0.0,
                         scaleFactor: 0.6,
                         listImages: productImages,
                         height: 300.0,
@@ -84,19 +89,19 @@ class _ProductDetailState extends State<ProductDetail> {
                             '${controller.products[widget.selectedProductIndex].name.toString().capitalize}',
                             style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                           ),
-                          const Text(
-                            '200 birr',
-                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.teal),
+                          Text(
+                            controller.products[widget.selectedProductIndex].price == null ? '0 Birr' : '${controller.products[widget.selectedProductIndex].price} Birr',
+                            style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.teal),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: size.height * 0.02),
+                    SizedBox(height: size.height * 0.01),
                     Padding(
-                      padding: const EdgeInsets.only(left: 20.0, top: 10.0),
+                      padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                       child: Text(
-                        'By ${controller.products[widget.selectedProductIndex].posterName.toString().capitalize}',
-                        style: const TextStyle(fontSize: 16.0, color: Colors.grey),
+                        "Posted " + DateFormat('yMMMEd').format(DateTime.parse(controller.products[widget.selectedProductIndex].datePosted.toString())),
+                        style: const TextStyle(fontSize: 14.0, color: Colors.grey, fontWeight: FontWeight.w600),
                       ),
                     ),
                     SizedBox(height: size.height * 0.02),
@@ -114,6 +119,55 @@ class _ProductDetailState extends State<ProductDetail> {
                         style: const TextStyle(fontSize: 16.0),
                       ),
                     ),
+                    //advertiser tab
+                    SizedBox(height: size.height * 0.02),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20.0, top: 10.0),
+                      child: Text(
+                        'Advertiser',
+                        style: TextStyle(fontSize: 16.0, color: Colors.black, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(height: size.height * 0.02),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: size.height * 0.03,
+                              backgroundColor: const Color(0xfff2f2f2),
+                              child: controller.products[widget.selectedProductIndex].posterProfileAvatar == null
+                                  ? null
+                                  : ClipRRect(
+                                      borderRadius: BorderRadius.circular(50.0),
+                                      child: CachedNetworkImage(
+                                        imageUrl: controller.products[widget.selectedProductIndex].posterProfileAvatar.toString(),
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                            ),
+                            SizedBox(width: size.width * 0.02),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  controller.products[widget.selectedProductIndex].posterName!.capitalize.toString(),
+                                  style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                                ),
+                                SizedBox(height: size.height * 0.005),
+                                Text("+251" + controller.products[widget.selectedProductIndex].posterPhoneNumber!.capitalize.toString()),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
                     SizedBox(height: size.height * 0.4)
                   ],
                 ),
@@ -128,7 +182,8 @@ class _ProductDetailState extends State<ProductDetail> {
                     SizedBox(width: size.width * 0.02),
                     MaterialButton(
                       onPressed: () {},
-                      color: Colors.transparent,
+                      color: Colors.white,
+                      splashColor: Colors.grey.shade200,
                       elevation: 0.0,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0), side: const BorderSide(color: Colors.teal, width: 1.0)),
                       height: 50.0,
@@ -141,7 +196,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         color: Colors.teal,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                         height: 50.0,
-                        child: const Text('Message', style: TextStyle(color: Colors.white)),
+                        child: Text('Message ${controller.products[widget.selectedProductIndex].posterName!.capitalize.toString()}', style: const TextStyle(color: Colors.white)),
                       ),
                     ),
                     SizedBox(width: size.width * 0.02),

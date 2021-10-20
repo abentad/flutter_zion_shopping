@@ -30,6 +30,8 @@ dependencies:
   carousel_images: ^1.1.2
   #for page transition animation
   transition: ^2.0.2
+  #for modifying date object
+  intl: ^0.17.0
   
 dev_dependencies:
   flutter_test:

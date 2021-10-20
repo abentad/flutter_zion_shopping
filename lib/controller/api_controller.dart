@@ -52,6 +52,7 @@ class ApiController extends GetxController {
                   posterId: response.data['results'][i]['posterId'],
                   posterName: response.data['results'][i]['posterName'],
                   posterPhoneNumber: response.data['results'][i]['posterPhoneNumber'],
+                  posterProfileAvatar: response.data['results'][i]['posterProfileAvatar'],
                   name: response.data['results'][i]['name'],
                   datePosted: response.data['results'][i]['datePosted'],
                   description: response.data['results'][i]['description'],
@@ -78,6 +79,7 @@ class ApiController extends GetxController {
                     posterId: response.data['results'][i]['posterId'],
                     posterName: response.data['results'][i]['posterName'],
                     posterPhoneNumber: response.data['results'][i]['posterPhoneNumber'],
+                    posterProfileAvatar: response.data['results'][i]['posterProfileAvatar'],
                     name: response.data['results'][i]['name'],
                     datePosted: response.data['results'][i]['datePosted'],
                     description: response.data['results'][i]['description'],
@@ -114,6 +116,7 @@ class ApiController extends GetxController {
     String posterId = Get.find<AuthController>().currentUser!.userId.toString();
     String posterName = Get.find<AuthController>().currentUser!.username.toString();
     String posterPhoneNumber = Get.find<AuthController>().currentUser!.phoneNumber.toString();
+    String posterProfileAvatar = Get.find<AuthController>().currentUser!.profile.toString();
 
     if (_token != null) {
       List<MultipartFile> _images = [];
@@ -126,6 +129,7 @@ class ApiController extends GetxController {
           "posterId": posterId,
           "posterName": posterName,
           "posterPhoneNumber": posterPhoneNumber,
+          "posterProfileAvatar": kbaseUrl + "/" + posterProfileAvatar,
           "name": name,
           "description": description,
           "price": price,

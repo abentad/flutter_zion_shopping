@@ -211,8 +211,8 @@ class _HomeScreenState extends State<HomeScreen> {
           enablePullDown: true,
           onLoading: _onLoading,
           onRefresh: _onRefresh,
-          header: const WaterDropHeader(
-              refresh: CupertinoActivityIndicator(), complete: SizedBox.shrink(), completeDuration: Duration(milliseconds: 100), waterDropColor: Colors.teal),
+          header:
+              const WaterDropHeader(refresh: CupertinoActivityIndicator(), complete: SizedBox.shrink(), completeDuration: Duration(milliseconds: 100), waterDropColor: Colors.teal),
           footer: CustomFooter(
             builder: (context, mode) {
               Widget body;
@@ -251,9 +251,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           margin: const EdgeInsets.symmetric(horizontal: 10.0),
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           decoration: BoxDecoration(
-                            color: const Color(0xfff2f2f2),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(10.0),
-                            boxShadow: [BoxShadow(color: Colors.grey.shade300, offset: const Offset(2, 7), blurRadius: 10.0)],
+                            boxShadow: [BoxShadow(color: Colors.grey.shade300, offset: const Offset(2, 4), blurRadius: 10.0)],
                           ),
                           child: BuildTopBar(
                             size: size,
@@ -273,9 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return Row(
                                   children: [
                                     Container(
-                                      margin: index == 0
-                                          ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0)
-                                          : const EdgeInsets.only(right: 10.0, bottom: 10.0),
+                                      margin: index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
                                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(5.0),
@@ -292,9 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 );
                               }
                               return Container(
-                                margin: index == 0
-                                    ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0)
-                                    : const EdgeInsets.only(right: 10.0, bottom: 10.0),
+                                margin: index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
                                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(50.0),
@@ -374,10 +370,8 @@ class ProductCard extends StatelessWidget {
                   height: size.height * 0.15,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    // color: const Color(0xfff2f2f2),
                     color: Colors.transparent,
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
-                    // boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
                   ),
                 ),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
@@ -398,8 +392,7 @@ class ProductCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: size.height * 0.01),
-                Text(controller.products[index].name!.capitalize.toString(),
-                    style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black)),
+                Text(controller.products[index].name!.capitalize.toString(), style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black)),
                 SizedBox(height: size.height * 0.01),
                 Text(
                   controller.products[index].price == null ? '0 birr' : '${controller.products[index].price} birr',
