@@ -69,11 +69,11 @@ class _ProductDetailState extends State<ProductDetail> {
                             itemBuilder: (context, index, realIndex) {
                               return GestureDetector(
                                 onTap: () {
-                                  print('Tapped on page $index');
+                                  print('Tapped on page $realIndex');
                                   Navigator.push(
                                     context,
                                     Transition(
-                                      child: ProductImageDetail(selectedImageIndex: index, productImages: productImages),
+                                      child: ProductImageDetail(selectedImageIndex: realIndex, productImages: productImages),
                                       transitionEffect: TransitionEffect.FADE,
                                       curve: Curves.easeIn,
                                     ),
@@ -106,10 +106,30 @@ class _ProductDetailState extends State<ProductDetail> {
                             ),
                           ),
                         ),
-                        AnimatedSmoothIndicator(
-                          activeIndex: activeIndex,
-                          count: 6,
-                          effect: const WormEffect(),
+                        Positioned(
+                          left: 0.0,
+                          right: 0.0,
+                          bottom: 0.0,
+                          child: Center(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 2.0),
+                              // decoration: const BoxDecoration(color: Colors.black),
+                              child: AnimatedSmoothIndicator(
+                                activeIndex: activeIndex,
+                                count: productImages.length,
+                                effect: const SlideEffect(
+                                  activeDotColor: Colors.greenAccent,
+                                  dotColor: Colors.white,
+                                  spacing: 8.0,
+                                  radius: 4.0,
+                                  dotWidth: 24.0,
+                                  dotHeight: 16.0,
+                                  // paintStyle: PaintingStyle.stroke,
+                                  strokeWidth: 1.5,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -121,11 +141,11 @@ class _ProductDetailState extends State<ProductDetail> {
                         children: [
                           Text(
                             '${controller.products[widget.selectedProductIndex].name.toString().capitalize}',
-                            style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold),
                           ),
                           Text(
                             controller.products[widget.selectedProductIndex].price == null ? '0 Birr' : '${controller.products[widget.selectedProductIndex].price} Birr',
-                            style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.teal),
+                            style: const TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.teal),
                           ),
                         ],
                       ),
@@ -151,7 +171,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         ),
                         child: Text(
                           controller.products[widget.selectedProductIndex].category!.capitalize.toString(),
-                          style: const TextStyle(fontSize: 16.0, color: Colors.black, fontWeight: FontWeight.w600),
+                          style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -221,7 +241,11 @@ class _ProductDetailState extends State<ProductDetail> {
                         ),
                       ),
                     ),
-                    SizedBox(height: size.height * 0.02),
+                    // SizedBox(height: size.height * 0.02),
+                    Container(
+                      height: size.height * 0.02,
+                      decoration: const BoxDecoration(color: Colors.white),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [

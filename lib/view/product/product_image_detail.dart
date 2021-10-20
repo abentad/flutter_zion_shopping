@@ -1,12 +1,41 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:transition/transition.dart';
 
-class ProductImageDetail extends StatelessWidget {
+class ProductImageDetail extends StatefulWidget {
   const ProductImageDetail({Key? key, required this.productImages, required this.selectedImageIndex}) : super(key: key);
   final List<String> productImages;
   final int selectedImageIndex;
+
+  @override
+  State<ProductImageDetail> createState() => _ProductImageDetailState();
+}
+
+class _ProductImageDetailState extends State<ProductImageDetail> with SingleTickerProviderStateMixin {
+  late int activeIndex;
+  late TransformationController _viewerController;
+  TapDownDetails? _tapDownDetails;
+
+  late AnimationController animationController;
+  Animation<Matrix4>? animation;
+
+  @override
+  void initState() {
+    activeIndex = widget.selectedImageIndex;
+    _viewerController = TransformationController();
+    animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300))
+      ..addListener(() {
+        _viewerController.value = animation!.value;
+      });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _viewerController.dispose();
+    animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,24 +50,30 @@ class ProductImageDetail extends StatelessWidget {
           color: Colors.black,
         ),
         child: CarouselSlider.builder(
-          itemCount: productImages.length,
+          itemCount: widget.productImages.length,
           itemBuilder: (context, index, realIndex) {
             return GestureDetector(
               onTap: () {
                 print('Tapped on page $index');
-                Navigator.push(
-                  context,
-                  Transition(
-                    child: ProductImageDetail(selectedImageIndex: index, productImages: productImages),
-                    transitionEffect: TransitionEffect.FADE,
-                    curve: Curves.easeIn,
-                  ),
-                );
+              },
+              onDoubleTapDown: (details) => _tapDownDetails = details,
+              onDoubleTap: () {
+                final position = _tapDownDetails!.localPosition;
+                const double scale = 3;
+                final x = -position.dx * (scale - 1);
+                final y = -position.dy * (scale - 1);
+                final zoomed = Matrix4.identity()
+                  ..translate(x, y)
+                  ..scale(scale);
+                final end = _viewerController.value.isIdentity() ? zoomed : Matrix4.identity();
+                animation = Matrix4Tween(begin: _viewerController.value, end: end).animate(CurveTween(curve: Curves.easeOut).animate(animationController));
+                animationController.forward(from: 0);
               },
               child: InteractiveViewer(
+                transformationController: _viewerController,
                 maxScale: 3.0,
                 child: CachedNetworkImage(
-                  imageUrl: productImages[index],
+                  imageUrl: widget.productImages[activeIndex],
                   fit: BoxFit.contain,
                 ),
               ),
@@ -56,7 +91,12 @@ class ProductImageDetail extends StatelessWidget {
             autoPlayAnimationDuration: const Duration(milliseconds: 800),
             autoPlayCurve: Curves.fastOutSlowIn,
             enlargeCenterPage: true,
-            onPageChanged: (index, reason) {},
+            onPageChanged: (index, reason) {
+              _viewerController.value = Matrix4.identity();
+              setState(() {
+                activeIndex = index;
+              });
+            },
             scrollDirection: Axis.horizontal,
           ),
         ),
