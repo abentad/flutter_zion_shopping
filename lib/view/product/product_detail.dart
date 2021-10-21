@@ -50,7 +50,6 @@ class _ProductDetailState extends State<ProductDetail> {
           child: Stack(
             children: [
               SingleChildScrollView(
-                // physics: const BouncingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

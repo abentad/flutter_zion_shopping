@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class ProductImageDetail extends StatefulWidget {
@@ -49,55 +48,27 @@ class _ProductImageDetailState extends State<ProductImageDetail> with SingleTick
           // color: Color(0xfff2f2f2),
           color: Colors.black,
         ),
-        child: CarouselSlider.builder(
-          itemCount: widget.productImages.length,
-          itemBuilder: (context, index, realIndex) {
-            return GestureDetector(
-              onTap: () {
-                print('Tapped on page $index');
-              },
-              onDoubleTapDown: (details) => _tapDownDetails = details,
-              onDoubleTap: () {
-                final position = _tapDownDetails!.localPosition;
-                const double scale = 3;
-                final x = -position.dx * (scale - 1);
-                final y = -position.dy * (scale - 1);
-                final zoomed = Matrix4.identity()
-                  ..translate(x, y)
-                  ..scale(scale);
-                final end = _viewerController.value.isIdentity() ? zoomed : Matrix4.identity();
-                animation = Matrix4Tween(begin: _viewerController.value, end: end).animate(CurveTween(curve: Curves.easeOut).animate(animationController));
-                animationController.forward(from: 0);
-              },
-              child: InteractiveViewer(
-                transformationController: _viewerController,
-                maxScale: 3.0,
-                child: CachedNetworkImage(
-                  imageUrl: widget.productImages[activeIndex],
-                  fit: BoxFit.contain,
-                ),
-              ),
-            );
+        child: GestureDetector(
+          onDoubleTapDown: (details) => _tapDownDetails = details,
+          onDoubleTap: () {
+            final position = _tapDownDetails!.localPosition;
+            const double scale = 3;
+            final x = -position.dx * (scale - 1);
+            final y = -position.dy * (scale - 1);
+            final zoomed = Matrix4.identity()
+              ..translate(x, y)
+              ..scale(scale);
+            final end = _viewerController.value.isIdentity() ? zoomed : Matrix4.identity();
+            animation = Matrix4Tween(begin: _viewerController.value, end: end).animate(CurveTween(curve: Curves.easeOut).animate(animationController));
+            animationController.forward(from: 0);
           },
-          options: CarouselOptions(
-            enableInfiniteScroll: false,
-            height: double.infinity,
-            aspectRatio: 16 / 9,
-            viewportFraction: 1.0,
-            initialPage: 0,
-            reverse: false,
-            // autoPlay: true,
-            autoPlayInterval: const Duration(seconds: 3),
-            autoPlayAnimationDuration: const Duration(milliseconds: 800),
-            autoPlayCurve: Curves.fastOutSlowIn,
-            enlargeCenterPage: true,
-            onPageChanged: (index, reason) {
-              _viewerController.value = Matrix4.identity();
-              setState(() {
-                activeIndex = index;
-              });
-            },
-            scrollDirection: Axis.horizontal,
+          child: InteractiveViewer(
+            transformationController: _viewerController,
+            maxScale: 3.0,
+            child: CachedNetworkImage(
+              imageUrl: widget.productImages[activeIndex],
+              fit: BoxFit.contain,
+            ),
           ),
         ),
       ),

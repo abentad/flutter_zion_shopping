@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/view/components/loading.dart';
+import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -40,88 +41,28 @@ class _ProductAddState extends State<ProductAdd> {
                   children: [
                     const Text('New Product', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600)),
                     TextButton(
-                      onPressed: () async {
-                        FocusScope.of(context).unfocus();
-                        Get.to(() => const Loading(), transition: Transition.fade);
-                        bool result = await Get.find<ApiController>().postProduct(
-                            _nameController.text, _descriptionController.text, _priceController.text.trim(), _categoryController.text.trim(), _imageFiles);
-                        if (result) {
-                          print('posted');
-                        } else {
-                          print('unable to post');
-                        }
+                      onPressed: () {
+                        postProduct(
+                          context,
+                          nameController: _nameController,
+                          priceController: _priceController,
+                          categoryController: _categoryController,
+                          descriptionController: _descriptionController,
+                          imageFiles: _imageFiles,
+                        );
                       },
                       child: const Text('Post', style: TextStyle(color: Colors.teal, fontSize: 18.0, fontWeight: FontWeight.bold)),
                     )
                   ],
                 ),
                 SizedBox(height: size.height * 0.04),
-                TextFormField(
-                  controller: _nameController,
-                  cursorColor: Colors.black,
-                  style: const TextStyle(fontSize: 18.0),
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                    filled: true,
-                    fillColor: const Color(0xfff2f2f2),
-                    hintText: "Name",
-                    hintStyle: const TextStyle(fontSize: 14.0, color: Colors.grey),
-                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                  ),
-                ),
+                CustomTextFormField(nameController: _nameController, hintText: "Name"),
                 SizedBox(height: size.height * 0.02),
-                TextFormField(
-                  controller: _priceController,
-                  cursorColor: Colors.black,
-                  keyboardType: TextInputType.number,
-                  style: const TextStyle(fontSize: 18.0),
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                    filled: true,
-                    fillColor: const Color(0xfff2f2f2),
-                    hintText: "Price",
-                    hintStyle: const TextStyle(fontSize: 14.0, color: Colors.grey),
-                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                  ),
-                ),
+                CustomTextFormField(nameController: _priceController, hintText: "Price", keyboardType: TextInputType.number),
                 SizedBox(height: size.height * 0.02),
-                TextFormField(
-                  controller: _categoryController,
-                  cursorColor: Colors.black,
-                  style: const TextStyle(fontSize: 18.0),
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                    filled: true,
-                    fillColor: const Color(0xfff2f2f2),
-                    hintText: "Category",
-                    hintStyle: const TextStyle(fontSize: 14.0, color: Colors.grey),
-                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                  ),
-                ),
+                CustomTextFormField(nameController: _categoryController, hintText: "Category"),
                 SizedBox(height: size.height * 0.02),
-                TextFormField(
-                  textInputAction: TextInputAction.done,
-                  controller: _descriptionController,
-                  cursorColor: Colors.black,
-                  style: const TextStyle(fontSize: 18.0),
-                  maxLines: 6,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                    filled: true,
-                    fillColor: const Color(0xfff2f2f2),
-                    hintText: "Description",
-                    hintStyle: const TextStyle(fontSize: 14.0, color: Colors.grey),
-                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                  ),
-                ),
+                CustomTextFormField(nameController: _descriptionController, hintText: "Description", maxLines: 6),
                 SizedBox(height: size.height * 0.02),
                 const Text('Images', style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400, color: Colors.grey)),
                 SizedBox(height: size.height * 0.02),
@@ -257,22 +198,35 @@ class _ProductAddState extends State<ProductAdd> {
                     ],
                   ),
                 ),
-                // SizedBox(height: size.height * 0.06),
-                // MaterialButton(
-                //   onPressed: () async {
-
-                //   },
-                //   color: Colors.black,
-                //   minWidth: double.infinity,
-                //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-                //   height: size.height * 0.07,
-                //   child: const Text("Add", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-                // ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+}
+
+void postProduct(
+  BuildContext context, {
+  TextEditingController? nameController,
+  descriptionController,
+  priceController,
+  categoryController,
+  List<File>? imageFiles,
+}) async {
+  FocusScope.of(context).unfocus();
+  Get.to(() => const Loading(), transition: Transition.fade);
+  bool result = await Get.find<ApiController>().postProduct(
+    nameController!.text,
+    descriptionController.text,
+    priceController.text.trim(),
+    categoryController.text.trim(),
+    imageFiles!,
+  );
+  if (result) {
+    print('posted');
+  } else {
+    print('unable to post');
   }
 }
