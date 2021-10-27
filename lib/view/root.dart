@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_node_auth/constants/app_constants.dart';
 
 class Root extends StatelessWidget {
   const Root({Key? key}) : super(key: key);
@@ -28,16 +29,18 @@ class BuildLoadingWithLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          "Zion Mart",
-          style: TextStyle(fontSize: 45.0, fontWeight: FontWeight.w600),
-        ),
-        SizedBox(height: size.height * 0.08),
-        const CircularProgressIndicator(),
-      ],
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.black,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(kappName, style: TextStyle(fontSize: 55.0, fontWeight: FontWeight.w600, color: Colors.white)),
+          SizedBox(height: size.height * 0.08),
+          const CircularProgressIndicator(color: Colors.white),
+        ],
+      ),
     );
   }
 }

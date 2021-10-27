@@ -2,7 +2,7 @@
     package="com.example.flutter_node_auth">
    <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="Zion mart"
+        android:label="Hooli mart"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

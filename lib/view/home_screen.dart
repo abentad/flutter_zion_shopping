@@ -6,7 +6,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
+import 'package:flutter_node_auth/controller/theme_controller.dart';
+import 'package:flutter_node_auth/view/app_setting_screens/themes_screen.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
+import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:flutter_node_auth/view/product/product_add.dart';
 import 'package:flutter_node_auth/view/product/product_detail.dart';
 import 'package:flutter_node_auth/view/settings.dart';
@@ -191,147 +194,172 @@ class _HomeScreenState extends State<HomeScreen> {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarIconBrightness: Brightness.dark));
     final size = MediaQuery.of(context).size;
 
-    return Scaffold(
-      drawer: const Drawer(),
-      floatingActionButton: Visibility(
-        visible: _isVisible,
-        child: FloatingActionButton(
-          onPressed: () async {
-            Get.to(() => const ProductAdd(), transition: Transition.cupertino);
-          },
-          backgroundColor: Colors.teal,
-          child: const Icon(Icons.add, color: Colors.white),
-        ),
-      ),
-      body: SafeArea(
-        child: SmartRefresher(
-          controller: _refreshController,
-          physics: const BouncingScrollPhysics(),
-          enablePullUp: true,
-          enablePullDown: true,
-          onLoading: _onLoading,
-          onRefresh: _onRefresh,
-          header:
-              const WaterDropHeader(refresh: CupertinoActivityIndicator(), complete: SizedBox.shrink(), completeDuration: Duration(milliseconds: 100), waterDropColor: Colors.teal),
-          footer: CustomFooter(
-            builder: (context, mode) {
-              Widget body;
-              if (mode == LoadStatus.idle) {
-                body = const Text("pull up");
-              } else if (mode == LoadStatus.loading) {
-                //TODO: put your custom loading animation here
-                body = const CupertinoActivityIndicator();
-              } else if (mode == LoadStatus.failed) {
-                body = const Text("Load Failed!Click retry!");
-              } else if (mode == LoadStatus.canLoading) {
-                body = const Text("release to load more");
-              } else if (mode == LoadStatus.noMore) {
-                // body = const SizedBox.shrink();
-                body = const Icon(Icons.done);
-              } else {
-                body = const Text("No more Data");
-              }
-              return SizedBox(height: 55.0, child: Center(child: body));
-            },
+    return GetBuilder<ThemeController>(
+      builder: (controller) => Scaffold(
+        backgroundColor: controller.defaultTheme['bgColor'],
+        drawer: Drawer(
+          child: Container(
+            decoration: BoxDecoration(
+              color: controller.defaultTheme['bgColor'],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomMaterialButton(
+                  onPressed: () {
+                    Navigator.push(context, CupertinoPageRoute(builder: (context) => const ThemesScreen()));
+                  },
+                  btnLabel: "Themes",
+                ),
+              ],
+            ),
           ),
-          child: CustomScrollView(
-            controller: _hideButtonController,
-            slivers: [
-              SliverPersistentHeader(
-                floating: true,
-                delegate: _SliverAppBarDelegate(
-                  minHeight: size.height * 0.19,
-                  maxHeight: size.height * 0.19,
-                  child: Container(
-                    decoration: const BoxDecoration(color: Colors.white),
-                    child: Column(
-                      children: [
-                        SizedBox(height: size.height * 0.02),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10.0),
-                            boxShadow: [BoxShadow(color: Colors.grey.shade300, offset: const Offset(2, 4), blurRadius: 10.0)],
+        ),
+        floatingActionButton: Visibility(
+          visible: _isVisible,
+          child: FloatingActionButton(
+            onPressed: () async {
+              Get.to(() => const ProductAdd(), transition: Transition.cupertino);
+            },
+            backgroundColor: controller.defaultTheme['addButton'],
+            child: Icon(Icons.add, color: controller.defaultTheme['whiteColor']),
+          ),
+        ),
+        body: SafeArea(
+          child: SmartRefresher(
+            controller: _refreshController,
+            physics: const BouncingScrollPhysics(),
+            enablePullUp: true,
+            enablePullDown: true,
+            onLoading: _onLoading,
+            onRefresh: _onRefresh,
+            header: const WaterDropHeader(
+                refresh: CupertinoActivityIndicator(), complete: SizedBox.shrink(), completeDuration: Duration(milliseconds: 100), waterDropColor: Colors.teal),
+            footer: CustomFooter(
+              builder: (context, mode) {
+                Widget body;
+                if (mode == LoadStatus.idle) {
+                  body = const Text("pull up");
+                } else if (mode == LoadStatus.loading) {
+                  //TODO: put your custom loading animation here
+                  body = const CupertinoActivityIndicator();
+                } else if (mode == LoadStatus.failed) {
+                  body = const Text("Load Failed!Click retry!");
+                } else if (mode == LoadStatus.canLoading) {
+                  body = const Text("release to load more");
+                } else if (mode == LoadStatus.noMore) {
+                  // body = const SizedBox.shrink();
+                  body = const Icon(Icons.done);
+                } else {
+                  body = const Text("No more Data");
+                }
+                return SizedBox(height: 55.0, child: Center(child: body));
+              },
+            ),
+            child: CustomScrollView(
+              controller: _hideButtonController,
+              slivers: [
+                SliverPersistentHeader(
+                  floating: true,
+                  delegate: _SliverAppBarDelegate(
+                    minHeight: size.height * 0.19,
+                    maxHeight: size.height * 0.19,
+                    child: Container(
+                      decoration: BoxDecoration(color: controller.defaultTheme['bgColor']),
+                      child: Column(
+                        children: [
+                          SizedBox(height: size.height * 0.02),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10.0),
+                              boxShadow: [
+                                controller.defaultTheme['bgColor'] == Colors.black87
+                                    ? BoxShadow(color: Colors.grey.shade700, offset: const Offset(2, 4), blurRadius: 10.0)
+                                    : BoxShadow(color: Colors.grey.shade300, offset: const Offset(2, 4), blurRadius: 10.0),
+                              ],
+                            ),
+                            child: BuildTopBar(
+                              size: size,
+                              controller: controller,
+                              onProfileTap: () {
+                                Get.to(() => const Settings(), transition: Transition.cupertino);
+                              },
+                            ),
                           ),
-                          child: BuildTopBar(
-                            size: size,
-                            onProfileTap: () {
-                              Get.to(() => const Settings(), transition: Transition.cupertino);
-                            },
-                          ),
-                        ),
-                        SizedBox(height: size.height * 0.02),
-                        Expanded(
-                          child: ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: categories.length,
-                            itemBuilder: (context, index) {
-                              if (index == 0) {
-                                return Row(
-                                  children: [
-                                    Container(
-                                      margin: index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
-                                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5.0),
-                                        color: const Color(0xff444941),
-                                        border: Border.all(color: const Color(0xfff8f8f8), width: 1.0),
+                          SizedBox(height: size.height * 0.02),
+                          Expanded(
+                            child: ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: categories.length,
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
+                                  return Row(
+                                    children: [
+                                      Container(
+                                        margin: index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
+                                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5.0),
+                                          color: const Color(0xff444941),
+                                          border: Border.all(color: const Color(0xfff8f8f8), width: 1.0),
+                                        ),
+                                        child: const Center(child: Text('All', style: TextStyle(color: Colors.white))),
                                       ),
-                                      child: const Center(child: Text('All', style: TextStyle(color: Colors.white))),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.only(bottom: 10.0, right: 10.0),
-                                      decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.5)),
-                                    ),
-                                  ],
+                                      Container(
+                                        margin: const EdgeInsets.only(bottom: 10.0, right: 10.0),
+                                        decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 0.5)),
+                                      ),
+                                    ],
+                                  );
+                                }
+                                return Container(
+                                  margin: index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
+                                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50.0),
+                                    color: const Color(0xfff2f2f2),
+                                    border: Border.all(color: Colors.grey.shade300, width: 1.0),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(categories[index]['icon']),
+                                      SizedBox(width: size.width * 0.02),
+                                      Center(child: Text(categories[index - 1]['name'], style: const TextStyle(color: Colors.black))),
+                                    ],
+                                  ),
                                 );
-                              }
-                              return Container(
-                                margin: index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
-                                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50.0),
-                                  color: const Color(0xfff2f2f2),
-                                  border: Border.all(color: Colors.grey.shade300, width: 1.0),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(categories[index]['icon']),
-                                    SizedBox(width: size.width * 0.02),
-                                    Center(child: Text(categories[index - 1]['name'], style: const TextStyle(color: Colors.black))),
-                                  ],
-                                ),
-                              );
-                            },
+                              },
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SliverToBoxAdapter(child: Container(height: size.height * 0.02)),
-              GetBuilder<ApiController>(
-                builder: (controller) => SliverStaggeredGrid.countBuilder(
-                  staggeredTileBuilder: (index) => const StaggeredTile.fit(1),
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 20.0,
-                  crossAxisSpacing: 0.0,
-                  itemCount: controller.products.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        Get.to(() => ProductDetail(selectedProductIndex: index), transition: Transition.cupertino);
-                      },
-                      child: ProductCard(controller: controller, index: index, size: size),
-                    );
-                  },
-                ),
-              )
-            ],
+                SliverToBoxAdapter(child: Container(height: size.height * 0.02)),
+                GetBuilder<ApiController>(
+                  builder: (controller) => SliverStaggeredGrid.countBuilder(
+                    staggeredTileBuilder: (index) => const StaggeredTile.fit(1),
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 20.0,
+                    crossAxisSpacing: 0.0,
+                    itemCount: controller.products.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          Get.to(() => ProductDetail(selectedProductIndex: index), transition: Transition.cupertino);
+                        },
+                        child: ProductCard(controller: controller, themeController: Get.find<ThemeController>(), index: index, size: size),
+                      );
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -340,11 +368,12 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({Key? key, required this.controller, required this.index, required this.size, this.radiusDouble = 15.0}) : super(key: key);
+  const ProductCard({Key? key, required this.controller, required this.themeController, required this.index, required this.size, this.radiusDouble = 15.0}) : super(key: key);
   final ApiController controller;
   final int index;
   final Size size;
   final double radiusDouble;
+  final ThemeController themeController;
   double doubleInRange(Random source, num start, num end) => source.nextDouble() * (end - start) + start;
 
   @override
@@ -383,7 +412,7 @@ class ProductCard extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 5.0),
             padding: const EdgeInsets.only(left: 10.0),
             decoration: BoxDecoration(
-              color: const Color(0xfff2f2f2),
+              color: themeController.defaultTheme['greyishColor'],
               // color: Colors.black,
               borderRadius: BorderRadius.only(bottomLeft: Radius.circular(radiusDouble), bottomRight: Radius.circular(radiusDouble)),
               // boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
@@ -392,11 +421,12 @@ class ProductCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: size.height * 0.01),
-                Text(controller.products[index].name!.capitalize.toString(), style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black)),
+                Text(controller.products[index].name!.capitalize.toString(),
+                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: themeController.defaultTheme['blackColor'])),
                 SizedBox(height: size.height * 0.01),
                 Text(
                   controller.products[index].price == null ? '0 birr' : '${controller.products[index].price} birr',
-                  style: const TextStyle(fontSize: 15.0, color: Colors.grey),
+                  style: TextStyle(fontSize: 15.0, color: themeController.defaultTheme['greyColor']),
                 ),
                 SizedBox(height: size.height * 0.02),
               ],

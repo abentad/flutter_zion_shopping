@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
+import 'package:flutter_node_auth/controller/theme_controller.dart';
 import 'package:get/get.dart';
 
 class BuildBottomBar extends StatelessWidget {
@@ -33,17 +34,18 @@ class BuildBottomBar extends StatelessWidget {
 }
 
 class BuildTopBar extends StatelessWidget {
-  const BuildTopBar({Key? key, required this.size, required this.onProfileTap}) : super(key: key);
+  const BuildTopBar({Key? key, required this.size, required this.onProfileTap, required this.controller}) : super(key: key);
 
   final Size size;
   final Function() onProfileTap;
+  final ThemeController controller;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       decoration: BoxDecoration(
-        // color: Colors.white,
+        // color: controller.defaultTheme['bgColor'],
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Row(
@@ -60,13 +62,11 @@ class BuildTopBar extends StatelessWidget {
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
                 prefixIcon: const Icon(Icons.search),
-                // fillColor: Colors.white,
+                // fillColor: controller.defaultTheme['bgColor'],
                 hintText: 'search'.tr,
                 hintStyle: const TextStyle(color: Colors.grey, fontSize: 16.0),
-                enabledBorder:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.transparent, width: 1.0)),
-                focusedBorder:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.transparent, width: 1.0)),
+                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.transparent, width: 1.0)),
+                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.transparent, width: 1.0)),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.transparent, width: 1.0)),
               ),
             ),
