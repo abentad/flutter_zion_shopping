@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
-import 'package:flutter_node_auth/utils/phone_helper.dart';
-import 'package:flutter_node_auth/utils/time_helper.dart';
+import 'package:flutter_node_auth/utils/app_helpers.dart';
 import 'package:flutter_node_auth/view/product/product_image_detail.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get_time_ago/get_time_ago.dart';
-import 'package:intl/intl.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:transition/transition.dart';
 
@@ -146,7 +144,9 @@ class _ProductDetailState extends State<ProductDetail> {
                             style: const TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            controller.products[widget.selectedProductIndex].price == null ? '0 Birr' : '${controller.products[widget.selectedProductIndex].price} Birr',
+                            controller.products[widget.selectedProductIndex].price == null
+                                ? '0 Birr'
+                                : '${formatPrice(controller.products[widget.selectedProductIndex].price)} Birr',
                             style: const TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.teal),
                           ),
                         ],

@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
+import 'package:flutter_node_auth/controller/product_controller.dart';
 import 'package:flutter_node_auth/view/components/loading.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:get/get.dart';
@@ -60,7 +62,36 @@ class _ProductAddState extends State<ProductAdd> {
                 SizedBox(height: size.height * 0.02),
                 CustomTextFormField(nameController: _priceController, hintText: "Price", keyboardType: TextInputType.number),
                 SizedBox(height: size.height * 0.02),
-                CustomTextFormField(nameController: _categoryController, hintText: "Category"),
+                GetBuilder<ProductController>(
+                  builder: (controller) => Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade200, width: 1.0),
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: const Color(0xfff2f2f2),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton(
+                        value: Get.find<ProductController>().selectedCategory,
+                        isExpanded: true,
+                        items: Get.find<ProductController>()
+                            .categories
+                            .map(
+                              (category) => DropdownMenuItem(
+                                value: category,
+                                child: Text(category),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          controller.changeCategory(value.toString());
+                          FocusScope.of(context).unfocus();
+                        },
+                      ),
+                    ),
+                  ),
+                ),
                 SizedBox(height: size.height * 0.02),
                 CustomTextFormField(nameController: _descriptionController, hintText: "Description", maxLines: 6),
                 SizedBox(height: size.height * 0.02),
@@ -221,7 +252,7 @@ void postProduct(
     nameController!.text,
     descriptionController.text,
     priceController.text.trim(),
-    categoryController.text.trim(),
+    Get.find<ProductController>().selectedCategory.trim(),
     imageFiles!,
   );
   if (result) {

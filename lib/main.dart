@@ -4,6 +4,7 @@ import 'package:flutter_node_auth/constants/app_constants.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/controller/lang_controller.dart';
+import 'package:flutter_node_auth/controller/product_controller.dart';
 import 'package:flutter_node_auth/controller/theme_controller.dart';
 import 'package:flutter_node_auth/utils/strings.dart';
 import 'package:flutter_node_auth/view/root.dart';
@@ -13,14 +14,19 @@ import 'package:get/route_manager.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() async {
+  //ad initialization
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
+  //system orientation and statusbar colors
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarIconBrightness: Brightness.dark));
+  //
   Get.put<LanguageController>(LanguageController());
   Get.put<AuthController>(AuthController());
   Get.put<ApiController>(ApiController());
   Get.put<ThemeController>(ThemeController());
+  Get.put<ProductController>(ProductController());
+  //
   runApp(const MyApp());
 }
 

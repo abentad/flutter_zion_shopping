@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/theme_controller.dart';
+import 'package:flutter_node_auth/utils/app_helpers.dart';
 import 'package:flutter_node_auth/view/app_setting_screens/themes_screen.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
@@ -425,7 +426,7 @@ class ProductCard extends StatelessWidget {
                     style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: themeController.defaultTheme['blackColor'])),
                 SizedBox(height: size.height * 0.01),
                 Text(
-                  controller.products[index].price == null ? '0 birr' : '${controller.products[index].price} birr',
+                  controller.products[index].price == null ? '0 birr' : '${formatPrice(controller.products[index].price)} birr',
                   style: TextStyle(fontSize: 15.0, color: themeController.defaultTheme['greyColor']),
                 ),
                 SizedBox(height: size.height * 0.02),
