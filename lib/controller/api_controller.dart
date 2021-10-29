@@ -132,12 +132,12 @@ class ApiController extends GetxController {
           "posterProfileAvatar": kbaseUrl + "/" + posterProfileAvatar,
           "name": name,
           "description": description,
+          "datePosted": DateTime.now().toString(),
           "price": price,
           "category": category,
           "gallery": _images,
         },
       );
-
       Dio _dio = Dio(
         BaseOptions(
           baseUrl: kbaseUrl,
@@ -147,7 +147,6 @@ class ApiController extends GetxController {
           responseType: ResponseType.json,
         ),
       );
-
       try {
         final response = await _dio.post('/data/post', data: formData);
         if (response.statusCode == 201) {

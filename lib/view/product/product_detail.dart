@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
+import 'package:flutter_node_auth/utils/phone_helper.dart';
+import 'package:flutter_node_auth/utils/time_helper.dart';
 import 'package:flutter_node_auth/view/product/product_image_detail.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get/instance_manager.dart';
+import 'package:get_time_ago/get_time_ago.dart';
 import 'package:intl/intl.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:transition/transition.dart';
@@ -150,10 +153,12 @@ class _ProductDetailState extends State<ProductDetail> {
                       ),
                     ),
                     SizedBox(height: size.height * 0.01),
+                    //
                     Padding(
                       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                       child: Text(
-                        "Posted " + DateFormat('yMMMEd').format(DateTime.parse(controller.products[widget.selectedProductIndex].datePosted.toString())),
+                        // "Posted " + formatTime(correctTimeZone(DateTime.parse(controller.products[widget.selectedProductIndex].datePosted.toString()))),
+                        "Posted ${GetTimeAgo.parse(DateTime.parse(controller.products[widget.selectedProductIndex].datePosted.toString()))}",
                         style: const TextStyle(fontSize: 14.0, color: Colors.grey, fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -233,7 +238,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                   style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
                                 ),
                                 SizedBox(height: size.height * 0.005),
-                                Text("+251" + controller.products[widget.selectedProductIndex].posterPhoneNumber!.capitalize.toString()),
+                                Text("+251" + controller.products[widget.selectedProductIndex].posterPhoneNumber.toString()),
                               ],
                             )
                           ],
@@ -250,7 +255,9 @@ class _ProductDetailState extends State<ProductDetail> {
                       children: [
                         SizedBox(width: size.width * 0.02),
                         MaterialButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            callNumber("+251" + controller.products[widget.selectedProductIndex].posterPhoneNumber.toString());
+                          },
                           color: Colors.white,
                           splashColor: Colors.grey.shade200,
                           elevation: 0.0,

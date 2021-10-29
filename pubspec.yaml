@@ -33,6 +33,8 @@ dependencies:
   #for displaying images in carousel form
   carousel_slider: ^4.0.0
   smooth_page_indicator: ^1.0.0+2
+  get_time_ago: ^1.0.8
+  flutter_phone_direct_caller: ^2.0.0
   
 dev_dependencies:
   flutter_test:

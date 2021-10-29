@@ -146,6 +146,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+  flutter_phone_direct_caller:
+    dependency: "direct main"
+    description:
+      name: flutter_phone_direct_caller
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -184,6 +191,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.3.8"
+  get_time_ago:
+    dependency: "direct main"
+    description:
+      name: get_time_ago
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.8"
   google_mobile_ads:
     dependency: "direct main"
     description:
