@@ -20,7 +20,7 @@ void main() async {
   //system orientation and statusbar colors
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarIconBrightness: Brightness.dark));
-  //
+
   Get.put<LanguageController>(LanguageController());
   Get.put<AuthController>(AuthController());
   Get.put<ApiController>(ApiController());
