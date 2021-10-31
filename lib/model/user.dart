@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class User {
-  String? userId;
+  int? userId;
   String? username;
   String? email;
   String? token;
@@ -10,7 +10,7 @@ class User {
   String? dateJoined;
   User({this.userId, this.username, this.email, this.token, this.profile, this.phoneNumber, this.dateJoined});
 
-  User copyWith({String? userId, String? username, String? email, String? token, String? profile, String? phoneNumber, String? dateJoined}) {
+  User copyWith({int? userId, String? username, String? email, String? token, String? profile, String? phoneNumber, String? dateJoined}) {
     return User(
       userId: userId ?? this.userId,
       username: username ?? this.username,

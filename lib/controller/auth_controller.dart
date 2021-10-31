@@ -92,6 +92,7 @@ class AuthController extends GetxController {
       Get.to(() => const Loading(), transition: Transition.fade);
       final response = await dio.post(endPoint, data: formData);
       if (response.statusCode == 201) {
+        print(response.statusCode);
         _currentUser = User.fromJson(response.toString());
         await _storage.write(key: _tokenKey, value: _currentUser!.token);
         print('fetching products');
@@ -141,6 +142,7 @@ class AuthController extends GetxController {
     );
     if (response.statusCode == 200) {
       _currentUser = User.fromJson(response.body);
+      print(_currentUser);
       print('fetching products');
       bool result = await Get.find<ApiController>().getProducts(true);
       if (result == true) {

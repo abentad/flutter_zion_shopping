@@ -12,7 +12,6 @@ import 'package:flutter_node_auth/view/app_setting_screens/themes_screen.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:flutter_node_auth/view/product/product_add.dart';
-import 'package:flutter_node_auth/view/product/product_detail.dart';
 import 'package:flutter_node_auth/view/settings.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -352,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemBuilder: (context, index) {
                       return InkWell(
                         onTap: () {
-                          Get.to(() => ProductDetail(selectedProductIndex: index), transition: Transition.cupertino);
+                          // Get.to(() => ProductDetail(selectedProductIndex: index), transition: Transition.cupertino);
                         },
                         child: ProductCard(controller: controller, themeController: Get.find<ThemeController>(), index: index, size: size),
                       );
@@ -395,7 +394,7 @@ class ProductCard extends StatelessWidget {
               borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
               child: CachedNetworkImage(
                 //TODO: reverse
-                imageUrl: '$kbaseUrl/${controller.products[index].productImages![0]}',
+                imageUrl: '$kbaseUrl/${controller.products[index].image}',
                 placeholder: (context, url) => Container(
                   height: size.height * 0.15,
                   width: double.infinity,

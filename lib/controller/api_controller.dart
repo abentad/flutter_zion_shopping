@@ -40,29 +40,28 @@ class ApiController extends GetxController {
           int _page = 1;
           int _limit = 20;
           _pages = 2;
-          print('init fetch... page= $_page limit = $_limit');
+          print('init fetch... page= $_page size = $_limit');
 
-          final response = await _dio.get("/data/products?page=$_page&limit=$_limit");
+          final response = await _dio.get("/data/products?page=$_page&size=$_limit");
           if (response.statusCode == 200) {
             _products.clear();
-            for (var i = 0; i < response.data['results'].length; i++) {
+            for (int i = 0; i < response.data['rows'].length; i++) {
               _products.add(
                 Product(
-                  sId: response.data['results'][i]['_id'],
-                  posterId: response.data['results'][i]['posterId'],
-                  posterName: response.data['results'][i]['posterName'],
-                  posterPhoneNumber: response.data['results'][i]['posterPhoneNumber'],
-                  posterProfileAvatar: response.data['results'][i]['posterProfileAvatar'],
-                  name: response.data['results'][i]['name'],
-                  datePosted: response.data['results'][i]['datePosted'],
-                  description: response.data['results'][i]['description'],
-                  price: response.data['results'][i]['price'],
-                  category: response.data['results'][i]['category'],
-                  productImages: response.data['results'][i]['productImages'],
+                  id: response.data['rows'][i]['id'],
+                  posterId: response.data['rows'][i]['posterId'],
+                  posterName: response.data['rows'][i]['posterName'],
+                  posterPhoneNumber: response.data['rows'][i]['posterPhoneNumber'],
+                  posterProfileAvatar: response.data['rows'][i]['posterProfileAvatar'],
+                  name: response.data['rows'][i]['name'],
+                  datePosted: response.data['rows'][i]['datePosted'],
+                  description: response.data['rows'][i]['description'],
+                  price: response.data['rows'][i]['price'],
+                  category: response.data['rows'][i]['category'],
+                  image: response.data['rows'][i]['image'],
                 ),
               );
             }
-            print(_products.length);
             update();
             return true;
           }
@@ -75,7 +74,7 @@ class ApiController extends GetxController {
               for (var i = 0; i < response.data['results'].length; i++) {
                 _products.add(
                   Product(
-                    sId: response.data['results'][i]['_id'],
+                    id: response.data['results'][i]['_id'],
                     posterId: response.data['results'][i]['posterId'],
                     posterName: response.data['results'][i]['posterName'],
                     posterPhoneNumber: response.data['results'][i]['posterPhoneNumber'],
@@ -85,11 +84,10 @@ class ApiController extends GetxController {
                     description: response.data['results'][i]['description'],
                     price: response.data['results'][i]['price'],
                     category: response.data['results'][i]['category'],
-                    productImages: response.data['results'][i]['productImages'],
+                    image: response.data['results'][i]['productImages'],
                   ),
                 );
               }
-              print(_products.length);
               _pages = _pages + 1;
               print('next page: $_pages');
 

@@ -38,7 +38,7 @@ class _ProductImageDetailState extends State<ProductImageDetail> with SingleTick
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    // final size = MediaQuery.of(context).size;
 
     return Scaffold(
       body: Container(
