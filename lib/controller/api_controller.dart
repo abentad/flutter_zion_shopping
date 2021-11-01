@@ -49,6 +49,7 @@ class ApiController extends GetxController {
               _products.add(
                 Product(
                   id: response.data['rows'][i]['id'],
+                  isPending: response.data['rows'][i]['isPending'],
                   posterId: response.data['rows'][i]['posterId'],
                   posterName: response.data['rows'][i]['posterName'],
                   posterPhoneNumber: response.data['rows'][i]['posterPhoneNumber'],
@@ -75,6 +76,7 @@ class ApiController extends GetxController {
                 _products.add(
                   Product(
                     id: response.data['results'][i]['_id'],
+                    isPending: response.data['rows'][i]['isPending'],
                     posterId: response.data['results'][i]['posterId'],
                     posterName: response.data['results'][i]['posterName'],
                     posterPhoneNumber: response.data['results'][i]['posterPhoneNumber'],
@@ -128,6 +130,7 @@ class ApiController extends GetxController {
           "posterName": posterName,
           "posterPhoneNumber": posterPhoneNumber,
           "posterProfileAvatar": kbaseUrl + "/" + posterProfileAvatar,
+          "isPending": 'true',
           "name": name,
           "description": description,
           "datePosted": DateTime.now().toString(),

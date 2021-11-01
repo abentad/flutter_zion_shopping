@@ -393,7 +393,6 @@ class ProductCard extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
               child: CachedNetworkImage(
-                //TODO: reverse
                 imageUrl: '$kbaseUrl/${controller.products[index].image}',
                 placeholder: (context, url) => Container(
                   height: size.height * 0.15,

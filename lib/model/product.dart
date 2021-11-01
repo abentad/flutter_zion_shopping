@@ -11,6 +11,7 @@ String productToJson(Product data) => json.encode(data.toJson());
 class Product {
   Product({
     required this.id,
+    required this.isPending,
     required this.name,
     required this.price,
     required this.description,
@@ -24,19 +25,21 @@ class Product {
   });
 
   int id;
-  String? name;
-  String? price;
-  String? description;
-  String? category;
-  String? image;
-  String? datePosted;
-  String? posterId;
-  String? posterName;
-  String? posterProfileAvatar;
-  String? posterPhoneNumber;
+  String isPending;
+  String name;
+  String price;
+  String description;
+  String category;
+  String image;
+  String datePosted;
+  String posterId;
+  String posterName;
+  String posterProfileAvatar;
+  String posterPhoneNumber;
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
         id: json["id"],
+        isPending: json["isPending"],
         name: json["name"],
         price: json["price"],
         description: json["description"],
@@ -51,6 +54,7 @@ class Product {
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "isPending": isPending,
         "name": name,
         "price": price,
         "description": description,
