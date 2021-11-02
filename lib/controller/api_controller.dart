@@ -21,6 +21,8 @@ class ApiController extends GetxController {
   //
   final List<ProductImage> _productImages = [];
   List<ProductImage> get productImages => _productImages;
+  String _productViews = "";
+  String get productViews => _productViews;
 
   ApiController();
   //variables for fetching more products on scroll
@@ -158,10 +160,11 @@ class ApiController extends GetxController {
       final response = await _dio.get('/image?id=$id');
       if (response.statusCode == 200) {
         _productImages.clear();
-        for (var productImage in response.data) {
+        for (var productImage in response.data['rows']) {
           _productImages.add(ProductImage.fromJson(productImage));
           print(_productImages.length);
         }
+        _productViews = response.data['updatedView'].toString();
         update();
         return true;
       } else {

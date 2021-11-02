@@ -154,7 +154,7 @@ class _ProductDetailState extends State<ProductDetail> {
                             children: [
                               const Icon(MdiIcons.eye, color: Colors.grey),
                               SizedBox(width: size.width * 0.02),
-                              Text(controller.products[widget.selectedProductIndex].views.toString(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                              Text(controller.productViews, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
                             ],
                           ),
                         ],
