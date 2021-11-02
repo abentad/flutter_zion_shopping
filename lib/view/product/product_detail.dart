@@ -106,26 +106,46 @@ class _ProductDetailState extends State<ProductDetail> {
                         Positioned(
                           left: 0.0,
                           right: 0.0,
-                          bottom: 0.0,
+                          top: 0.0,
                           child: Center(
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 2.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                              // decoration: BoxDecoration(boxShadow: [BoxShadow(color: Colors.grey.shade200, offset: const Offset(2, 2), blurRadius: 5.0)]),
                               child: AnimatedSmoothIndicator(
                                 activeIndex: activeIndex,
                                 count: controller.productImages.length,
-                                effect: const SlideEffect(
+                                effect: SlideEffect(
                                   activeDotColor: Colors.greenAccent,
-                                  dotColor: Colors.white,
+                                  dotColor: Colors.grey,
                                   spacing: 8.0,
                                   radius: 4.0,
-                                  dotWidth: 24.0,
-                                  dotHeight: 16.0,
+                                  dotWidth: controller.productImages.length > 1 ? size.width / controller.productImages.length : 0.0,
+                                  dotHeight: 5.0,
                                   strokeWidth: 1.5,
                                 ),
                               ),
                             ),
                           ),
                         ),
+                        // Positioned(
+                        //   // left: 0.0,
+                        //   right: 10.0,
+                        //   bottom: 5.0,
+                        //   child: Center(
+                        //     child: Container(
+                        //       padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
+                        //       decoration: BoxDecoration(
+                        //         color: Colors.white,
+                        //         borderRadius: BorderRadius.circular(10.0),
+                        //         // boxShadow: [BoxShadow(color: Colors.grey.shade200, offset: const Offset(2, 2), blurRadius: 5.0)],
+                        //       ),
+                        //       child: IconButton(
+                        //         onPressed: () {},
+                        //         icon: const Icon(MdiIcons.share),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                     SizedBox(height: size.height * 0.02),
@@ -170,17 +190,47 @@ class _ProductDetailState extends State<ProductDetail> {
 
                     Padding(
                       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 15.0, top: 10.0, bottom: 10.0, right: 15.0),
-                        decoration: BoxDecoration(
-                          // color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(10.0),
-                          border: Border.all(color: Colors.teal),
-                        ),
-                        child: Text(
-                          controller.products[widget.selectedProductIndex].category.capitalize.toString(),
-                          style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w600),
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(left: 15.0, top: 10.0, bottom: 10.0, right: 15.0),
+                            decoration: BoxDecoration(
+                              // color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(10.0),
+                              border: Border.all(color: Colors.teal),
+                            ),
+                            child: Text(
+                              controller.products[widget.selectedProductIndex].category.capitalize.toString(),
+                              style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(MdiIcons.share),
+                                ),
+                              ),
+                              SizedBox(width: size.width * 0.02),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(MdiIcons.flag),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                     SizedBox(height: size.height * 0.02),
