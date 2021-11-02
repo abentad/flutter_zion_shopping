@@ -19,9 +19,9 @@ class ApiController extends GetxController {
   final List<Product> _products = [];
   List<Product> get products => _products;
   //
-  final List<ProductImage> _productImages = [];
+  List<ProductImage> _productImages = [];
   List<ProductImage> get productImages => _productImages;
-  String _productViews = "";
+  String _productViews = "  ";
   String get productViews => _productViews;
 
   ApiController();
@@ -47,7 +47,6 @@ class ApiController extends GetxController {
           int _limit = 20;
           _pages = 2;
           print('init fetch... page= $_page size = $_limit');
-
           final response = await _dio.get("/data/products?page=$_page&size=$_limit");
           if (response.statusCode == 200) {
             _products.clear();
@@ -59,16 +58,15 @@ class ApiController extends GetxController {
           }
         } else {
           print('fetching more... page= $_pages limit = $_limits');
-          final response = await _dio.get("/data/products?page=$_pages&limit=$_limits");
+          final response = await _dio.get("/data/products?page=$_pages&size=$_limits");
           print(_products.length);
           if (response.statusCode == 200) {
-            if (response.data['results'].isNotEmpty) {
-              for (var i = 0; i < response.data['results'].length; i++) {
+            if (response.data['rows'].isNotEmpty) {
+              for (var i = 0; i < response.data['rows'].length; i++) {
                 _products.add(Product.fromJson(response.data['rows'][i]));
               }
               _pages = _pages + 1;
               print('next page: $_pages');
-
               update();
             } else {
               return false;
@@ -93,7 +91,7 @@ class ApiController extends GetxController {
     String posterName = Get.find<AuthController>().currentUser!.username.toString();
     String posterPhoneNumber = Get.find<AuthController>().currentUser!.phoneNumber.toString();
     String posterProfileAvatar = Get.find<AuthController>().currentUser!.profile.toString();
-    String isPendingString = 'false';
+    String isPendingString = 'true';
 
     if (_token != null) {
       List<MultipartFile> _images = [];
@@ -174,5 +172,10 @@ class ApiController extends GetxController {
       print(e);
       return false;
     }
+  }
+
+  void resetProductImagesAndProductViews() {
+    _productImages = [];
+    _productViews = "  ";
   }
 }

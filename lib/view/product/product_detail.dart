@@ -33,6 +33,12 @@ class _ProductDetailState extends State<ProductDetail> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    getter.Get.find<ApiController>().resetProductImagesAndProductViews();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
