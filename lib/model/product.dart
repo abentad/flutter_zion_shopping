@@ -12,6 +12,7 @@ class Product {
   Product({
     required this.id,
     required this.isPending,
+    required this.views,
     required this.name,
     required this.price,
     required this.description,
@@ -26,12 +27,13 @@ class Product {
 
   int id;
   String isPending;
+  int views;
   String name;
   String price;
   String description;
   String category;
   String image;
-  String datePosted;
+  DateTime datePosted;
   String posterId;
   String posterName;
   String posterProfileAvatar;
@@ -40,12 +42,13 @@ class Product {
   factory Product.fromJson(Map<String, dynamic> json) => Product(
         id: json["id"],
         isPending: json["isPending"],
+        views: json["views"],
         name: json["name"],
         price: json["price"],
         description: json["description"],
         category: json["category"],
         image: json["image"],
-        datePosted: json["datePosted"],
+        datePosted: DateTime.parse(json["datePosted"]),
         posterId: json["posterId"],
         posterName: json["posterName"],
         posterProfileAvatar: json["posterProfileAvatar"],
@@ -55,12 +58,13 @@ class Product {
   Map<String, dynamic> toJson() => {
         "id": id,
         "isPending": isPending,
+        "views": views,
         "name": name,
         "price": price,
         "description": description,
         "category": category,
         "image": image,
-        "datePosted": datePosted,
+        "datePosted": datePosted.toIso8601String(),
         "posterId": posterId,
         "posterName": posterName,
         "posterProfileAvatar": posterProfileAvatar,

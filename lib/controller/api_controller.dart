@@ -50,22 +50,7 @@ class ApiController extends GetxController {
           if (response.statusCode == 200) {
             _products.clear();
             for (int i = 0; i < response.data['rows'].length; i++) {
-              _products.add(
-                Product(
-                  id: response.data['rows'][i]['id'],
-                  isPending: response.data['rows'][i]['isPending'],
-                  posterId: response.data['rows'][i]['posterId'],
-                  posterName: response.data['rows'][i]['posterName'],
-                  posterPhoneNumber: response.data['rows'][i]['posterPhoneNumber'],
-                  posterProfileAvatar: response.data['rows'][i]['posterProfileAvatar'],
-                  name: response.data['rows'][i]['name'],
-                  datePosted: response.data['rows'][i]['datePosted'],
-                  description: response.data['rows'][i]['description'],
-                  price: response.data['rows'][i]['price'],
-                  category: response.data['rows'][i]['category'],
-                  image: response.data['rows'][i]['image'],
-                ),
-              );
+              _products.add(Product.fromJson(response.data['rows'][i]));
             }
             update();
             return true;
@@ -77,22 +62,7 @@ class ApiController extends GetxController {
           if (response.statusCode == 200) {
             if (response.data['results'].isNotEmpty) {
               for (var i = 0; i < response.data['results'].length; i++) {
-                _products.add(
-                  Product(
-                    id: response.data['results'][i]['_id'],
-                    isPending: response.data['rows'][i]['isPending'],
-                    posterId: response.data['results'][i]['posterId'],
-                    posterName: response.data['results'][i]['posterName'],
-                    posterPhoneNumber: response.data['results'][i]['posterPhoneNumber'],
-                    posterProfileAvatar: response.data['results'][i]['posterProfileAvatar'],
-                    name: response.data['results'][i]['name'],
-                    datePosted: response.data['results'][i]['datePosted'],
-                    description: response.data['results'][i]['description'],
-                    price: response.data['results'][i]['price'],
-                    category: response.data['results'][i]['category'],
-                    image: response.data['results'][i]['productImages'],
-                  ),
-                );
+                _products.add(Product.fromJson(response.data['rows'][i]));
               }
               _pages = _pages + 1;
               print('next page: $_pages');
@@ -137,6 +107,7 @@ class ApiController extends GetxController {
           "posterProfileAvatar": kbaseUrl + "/" + posterProfileAvatar,
           "isPending": isPendingString,
           "name": name,
+          "views": 0,
           "description": description,
           "datePosted": DateTime.now().toString(),
           "price": price,
