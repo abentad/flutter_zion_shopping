@@ -12,6 +12,7 @@ import 'package:flutter_node_auth/view/app_setting_screens/themes_screen.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:flutter_node_auth/view/product/product_add.dart';
+import 'package:flutter_node_auth/view/product/product_detail.dart';
 import 'package:flutter_node_auth/view/settings.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -351,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemBuilder: (context, index) {
                       return InkWell(
                         onTap: () {
-                          // Get.to(() => ProductDetail(selectedProductIndex: index), transition: Transition.cupertino);
+                          Get.to(() => ProductDetail(selectedProductIndex: index), transition: Transition.cupertino);
                         },
                         child: ProductCard(controller: controller, themeController: Get.find<ThemeController>(), index: index, size: size),
                       );
@@ -420,11 +421,11 @@ class ProductCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: size.height * 0.01),
-                Text(controller.products[index].name!.capitalize.toString(),
+                Text(controller.products[index].name.capitalize.toString(),
                     style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: themeController.defaultTheme['blackColor'])),
                 SizedBox(height: size.height * 0.01),
                 Text(
-                  controller.products[index].price == null ? '0 birr' : '${formatPrice(controller.products[index].price)} birr',
+                  '${formatPrice(controller.products[index].price)} birr',
                   style: TextStyle(fontSize: 15.0, color: themeController.defaultTheme['greyColor']),
                 ),
                 SizedBox(height: size.height * 0.02),

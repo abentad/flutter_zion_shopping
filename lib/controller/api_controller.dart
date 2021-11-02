@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/model/product.dart';
+import 'package:flutter_node_auth/model/product_image.dart';
 import 'package:flutter_node_auth/view/home_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -17,6 +18,9 @@ class ApiController extends GetxController {
   //
   final List<Product> _products = [];
   List<Product> get products => _products;
+  //
+  final List<ProductImage> _productImages = [];
+  List<ProductImage> get productImages => _productImages;
 
   ApiController();
   //variables for fetching more products on scroll
@@ -117,6 +121,7 @@ class ApiController extends GetxController {
     String posterName = Get.find<AuthController>().currentUser!.username.toString();
     String posterPhoneNumber = Get.find<AuthController>().currentUser!.phoneNumber.toString();
     String posterProfileAvatar = Get.find<AuthController>().currentUser!.profile.toString();
+    String isPendingString = 'false';
 
     if (_token != null) {
       List<MultipartFile> _images = [];
@@ -130,7 +135,7 @@ class ApiController extends GetxController {
           "posterName": posterName,
           "posterPhoneNumber": posterPhoneNumber,
           "posterProfileAvatar": kbaseUrl + "/" + posterProfileAvatar,
-          "isPending": 'true',
+          "isPending": isPendingString,
           "name": name,
           "description": description,
           "datePosted": DateTime.now().toString(),
@@ -165,5 +170,35 @@ class ApiController extends GetxController {
     }
 
     return false;
+  }
+
+  Future<bool> getProductImages(int id) async {
+    String? _token = await _storage.read(key: _tokenKey);
+    Dio _dio = Dio(
+      BaseOptions(
+        baseUrl: kbaseUrl,
+        connectTimeout: 10000,
+        receiveTimeout: 100000,
+        headers: {'x-access-token': _token},
+        responseType: ResponseType.json,
+      ),
+    );
+    try {
+      final response = await _dio.get('/image?id=$id');
+      if (response.statusCode == 200) {
+        _productImages.clear();
+        for (var productImage in response.data) {
+          _productImages.add(ProductImage.fromJson(productImage));
+          print(_productImages.length);
+        }
+        update();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 }

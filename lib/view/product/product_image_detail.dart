@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_node_auth/constants/api_path.dart';
+import 'package:flutter_node_auth/model/product_image.dart';
 
 class ProductImageDetail extends StatefulWidget {
   const ProductImageDetail({Key? key, required this.productImages, required this.selectedImageIndex}) : super(key: key);
-  final List<String> productImages;
+  final List<ProductImage> productImages;
   final int selectedImageIndex;
 
   @override
@@ -66,7 +68,7 @@ class _ProductImageDetailState extends State<ProductImageDetail> with SingleTick
             transformationController: _viewerController,
             maxScale: 3.0,
             child: CachedNetworkImage(
-              imageUrl: widget.productImages[activeIndex],
+              imageUrl: kbaseUrl + "/" + widget.productImages[activeIndex].url,
               fit: BoxFit.contain,
             ),
           ),

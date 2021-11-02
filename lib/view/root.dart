@@ -31,14 +31,14 @@ class BuildLoadingWithLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.black,
+        color: Colors.white,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(kappName, style: TextStyle(fontSize: 55.0, fontWeight: FontWeight.w600, color: Colors.white)),
+          const Text(kappName, style: TextStyle(fontSize: 55.0, fontWeight: FontWeight.w600, color: Colors.black)),
           SizedBox(height: size.height * 0.08),
-          const CircularProgressIndicator(color: Colors.white),
+          const CircularProgressIndicator(color: Colors.black),
         ],
       ),
     );
