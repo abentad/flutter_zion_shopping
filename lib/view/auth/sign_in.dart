@@ -93,9 +93,11 @@ class SignIn extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: MaterialButton(
                     onPressed: () async {
-                      bool _result = await Get.find<AuthController>().signInUser(_emailController.text, _passwordController.text);
-                      if (_result) {
-                        Get.offAll(() => const HomeScreen(), transition: Transition.fade);
+                      if (_emailController.text != "" && _passwordController.text != "") {
+                        bool _result = await Get.find<AuthController>().signInUser(_emailController.text, _passwordController.text);
+                        if (_result) {
+                          Get.offAll(() => const HomeScreen(), transition: Transition.fade);
+                        }
                       }
                     },
                     color: Colors.black,
@@ -112,8 +114,7 @@ class SignIn extends StatelessWidget {
                     const Text("Don't have an account?", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0)),
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('Sign up',
-                          style: TextStyle(decoration: TextDecoration.underline, fontWeight: FontWeight.w600, fontSize: 16.0, color: Colors.black)),
+                      child: const Text('Sign up', style: TextStyle(decoration: TextDecoration.underline, fontWeight: FontWeight.w600, fontSize: 16.0, color: Colors.black)),
                     ),
                   ],
                 ),

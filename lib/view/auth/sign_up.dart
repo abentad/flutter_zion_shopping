@@ -38,8 +38,8 @@ class SignUp extends StatelessWidget {
                 SizedBox(height: size.height * 0.02),
                 const Padding(
                   padding: EdgeInsets.only(left: 20.0, right: 60.0),
-                  child: Text('Create an account so you can order your favorite food even faster',
-                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400, color: Colors.grey)),
+                  child:
+                      Text('Create an account so you can order your favorite food even faster', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400, color: Colors.grey)),
                 ),
                 SizedBox(height: size.height * 0.06),
                 Padding(
@@ -143,11 +143,13 @@ class SignUp extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: MaterialButton(
                     onPressed: () async {
-                      File file = await Get.find<AuthController>().chooseImage(ImageSource.gallery);
-                      bool _result = await Get.find<AuthController>()
-                          .signUpUser(_usernameController.text, _emailController.text, _phoneNumberController.text, _passwordController.text, file);
-                      if (_result) {
-                        Get.offAll(() => const HomeScreen(), transition: Transition.fade);
+                      if (_usernameController.text != "" && _emailController.text != "" && _passwordController.text != "" && _phoneNumberController.text != "") {
+                        File file = await Get.find<AuthController>().chooseImage(ImageSource.gallery);
+                        bool _result = await Get.find<AuthController>()
+                            .signUpUser(_usernameController.text, _emailController.text, _phoneNumberController.text, _passwordController.text, file);
+                        if (_result) {
+                          Get.offAll(() => const HomeScreen(), transition: Transition.fade);
+                        }
                       }
                     },
                     color: Colors.black,

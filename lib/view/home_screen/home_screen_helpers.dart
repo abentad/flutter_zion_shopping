@@ -3,8 +3,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
-import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/theme_controller.dart';
+import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
 import 'package:flutter_node_auth/view/app_setting_screens/languages_screen.dart';
 import 'package:flutter_node_auth/view/app_setting_screens/themes_screen.dart';
@@ -122,8 +122,9 @@ Widget buildDrawer(ThemeController controller, BuildContext context) {
 }
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({Key? key, required this.controller, required this.themeController, required this.index, required this.size, this.radiusDouble = 15.0}) : super(key: key);
-  final ApiController controller;
+  const ProductCard({Key? key, required this.products, required this.themeController, required this.index, required this.size, this.radiusDouble = 15.0}) : super(key: key);
+  // final ApiController controller;
+  final List<Product> products;
   final int index;
   final Size size;
   final double radiusDouble;
@@ -147,7 +148,7 @@ class ProductCard extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
               child: CachedNetworkImage(
-                imageUrl: '$kbaseUrl/${controller.products[index].image}',
+                imageUrl: '$kbaseUrl/${products[index].image}',
                 placeholder: (context, url) => Container(
                   height: size.height * 0.15,
                   width: double.infinity,
@@ -174,11 +175,10 @@ class ProductCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: size.height * 0.01),
-                Text(controller.products[index].name.capitalize.toString(),
-                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: themeController.defaultTheme['blackColor'])),
+                Text(products[index].name.capitalize.toString(), style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: themeController.defaultTheme['blackColor'])),
                 SizedBox(height: size.height * 0.01),
                 Text(
-                  '${formatPrice(controller.products[index].price)} birr',
+                  '${formatPrice(products[index].price)} birr',
                   style: TextStyle(fontSize: 15.0, color: themeController.defaultTheme['greyColor']),
                 ),
                 SizedBox(height: size.height * 0.02),

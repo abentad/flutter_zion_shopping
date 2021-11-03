@@ -5,6 +5,7 @@ import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_node_auth/model/product_image.dart';
+import 'package:flutter_node_auth/model/user.dart';
 import 'package:flutter_node_auth/view/home_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -24,11 +25,17 @@ class ApiController extends GetxController {
   String _productViews = "  ";
   String get productViews => _productViews;
 
-  ApiController();
   //variables for fetching more products on scroll
   int _pages = 2;
   int _categoryPages = 2;
   final int _limits = 20;
+  //
+  User? _seller;
+  User? get seller => _seller;
+  final List<Product> _sellerProducts = [];
+  List<Product> get sellerProducts => _sellerProducts;
+
+  ApiController();
 
   Future<bool> getProducts(bool isinitcall) async {
     String? _token = await _storage.read(key: _tokenKey);
@@ -222,6 +229,46 @@ class ApiController extends GetxController {
           print(_productImages.length);
         }
         _productViews = response.data['updatedView'].toString();
+        update();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> getSellerById(String id) async {
+    String? _token = await _storage.read(key: _tokenKey);
+    int parsedId = int.parse(id);
+
+    Dio _dio = Dio(
+      BaseOptions(
+        baseUrl: kbaseUrl,
+        connectTimeout: 10000,
+        receiveTimeout: 100000,
+        headers: {'x-access-token': _token},
+        responseType: ResponseType.json,
+      ),
+    );
+    try {
+      final response = await _dio.get('/user/seller?id=$parsedId');
+      if (response.statusCode == 200) {
+        _seller = User(
+          userId: response.data['responseData']['userId'],
+          username: response.data['responseData']['username'],
+          email: response.data['responseData']['email'],
+          profile: response.data['responseData']['profile'],
+          phoneNumber: response.data['responseData']['phoneNumber'],
+          dateJoined: response.data['responseData']['dateJoined'],
+        );
+        _sellerProducts.clear();
+        for (var sellerProduct in response.data['sellerProducts']) {
+          _sellerProducts.add(Product.fromJson(sellerProduct));
+        }
+        print(_sellerProducts.length);
         update();
         return true;
       } else {

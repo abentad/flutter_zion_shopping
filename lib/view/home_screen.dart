@@ -180,9 +180,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemBuilder: (context, index) {
                       return InkWell(
                         onTap: () {
-                          Get.to(() => ProductDetail(selectedProductIndex: index), transition: Transition.cupertino);
+                          Get.to(() => ProductDetail(selectedProductIndex: index, productsList: controller.products), transition: Transition.cupertino);
                         },
-                        child: ProductCard(controller: controller, themeController: Get.find<ThemeController>(), index: index, size: size),
+                        child: ProductCard(products: controller.products, themeController: Get.find<ThemeController>(), index: index, size: size),
                       );
                     },
                   ),

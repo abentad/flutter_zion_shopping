@@ -83,6 +83,7 @@ class AuthController extends GetxController {
       "email": email.trim(),
       "password": password.trim(),
       "phoneNumber": phoneNumber.trim(),
+      "dateJoined": DateTime.now().toString(),
       "profile": await MultipartFile.fromFile(file.path),
     });
 
