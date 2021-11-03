@@ -6,28 +6,116 @@ import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/theme_controller.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
+import 'package:flutter_node_auth/view/app_setting_screens/languages_screen.dart';
 import 'package:flutter_node_auth/view/app_setting_screens/themes_screen.dart';
-import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'dart:math' as math;
 
 Widget buildDrawer(ThemeController controller, BuildContext context) {
+  final size = MediaQuery.of(context).size;
+
   return Drawer(
-    child: Container(
-      decoration: BoxDecoration(
-        color: controller.defaultTheme['bgColor'],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CustomMaterialButton(
-            onPressed: () {
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => const ThemesScreen()));
-            },
-            btnLabel: "Themes",
-          ),
-        ],
+    child: SafeArea(
+      child: Container(
+        decoration: BoxDecoration(
+          color: controller.defaultTheme['bgColor'],
+        ),
+        child: Column(
+          children: [
+            Container(
+              height: size.height * 0.25,
+              width: double.infinity,
+              decoration: const BoxDecoration(color: Colors.teal),
+              child: const Center(child: FlutterLogo(size: 42.0)),
+            ),
+            SizedBox(height: size.height * 0.02),
+            const Spacer(),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LanguageScreen(),
+                      ));
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+                  decoration: const BoxDecoration(),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.language, size: 16.0),
+                      SizedBox(width: size.width * 0.06),
+                      const Text('Language', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ThemesScreen(),
+                      ));
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+                  decoration: const BoxDecoration(),
+                  child: Row(
+                    children: [
+                      const Icon(MdiIcons.themeLightDark, size: 16.0),
+                      SizedBox(width: size.width * 0.06),
+                      const Text('Themes', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const Divider(),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {},
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+                  decoration: const BoxDecoration(),
+                  child: Row(
+                    children: [
+                      const Icon(MdiIcons.help, size: 16.0),
+                      SizedBox(width: size.width * 0.06),
+                      const Text('Help', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {},
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+                  decoration: const BoxDecoration(),
+                  child: Row(
+                    children: [
+                      const Icon(MdiIcons.share, size: 16.0),
+                      SizedBox(width: size.width * 0.06),
+                      const Text('Tell a Friend', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // SizedBox(height: size.height * 0.02),
+          ],
+        ),
       ),
     ),
   );

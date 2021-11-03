@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
-import 'package:flutter_node_auth/controller/lang_controller.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:get/get.dart';
 
@@ -39,22 +38,8 @@ class Settings extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: size.height * 0.08),
-                CustomMaterialButton(
-                  onPressed: () {
-                    Get.find<LanguageController>().changeLanguage(langCode: 'en', countryCode: 'US');
-                    Get.back();
-                  },
-                  btnLabel: "English",
-                ),
-                SizedBox(height: size.height * 0.02),
-                CustomMaterialButton(
-                  onPressed: () {
-                    Get.find<LanguageController>().changeLanguage(langCode: 'am', countryCode: 'ET');
-                    Get.back();
-                  },
-                  btnLabel: "Amharic",
-                ),
+                // SizedBox(height: size.height * 0.08),
+
                 const Spacer(),
                 CustomMaterialButton(
                   onPressed: () {
