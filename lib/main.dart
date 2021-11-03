@@ -28,7 +28,6 @@ void main() async {
   Get.put<ApiController>(ApiController());
   Get.put<ThemeController>(ThemeController());
   Get.put<ProductController>(ProductController());
-  //
   runApp(const MyApp());
 }
 

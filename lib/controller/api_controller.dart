@@ -27,6 +27,7 @@ class ApiController extends GetxController {
   ApiController();
   //variables for fetching more products on scroll
   int _pages = 2;
+  int _categoryPages = 2;
   final int _limits = 20;
 
   Future<bool> getProducts(bool isinitcall) async {
@@ -43,6 +44,7 @@ class ApiController extends GetxController {
       );
       try {
         if (isinitcall) {
+          _products.clear();
           int _page = 1;
           int _limit = 20;
           _pages = 2;
@@ -67,6 +69,63 @@ class ApiController extends GetxController {
               }
               _pages = _pages + 1;
               print('next page: $_pages');
+              update();
+            } else {
+              return false;
+            }
+            return true;
+          }
+        }
+      } catch (e) {
+        print(e);
+        return false;
+      }
+    } else {
+      print('no token found skippng fetch');
+      return false;
+    }
+    return false;
+  }
+
+  Future<bool> getProductsByCategory(bool isinitcall, String category) async {
+    String? _token = await _storage.read(key: _tokenKey);
+    if (_token != null) {
+      Dio _dio = Dio(
+        BaseOptions(
+          baseUrl: kbaseUrl,
+          connectTimeout: 10000,
+          receiveTimeout: 100000,
+          headers: {'x-access-token': _token},
+          responseType: ResponseType.json,
+        ),
+      );
+      try {
+        if (isinitcall) {
+          _products.clear();
+          int _page = 1;
+          int _limit = 20;
+          _categoryPages = 2;
+          print('init fetch... page= $_page size = $_limit category = $category');
+          final response = await _dio.get("/data/products/category?page=$_page&size=$_limit&category=$category");
+          if (response.statusCode == 200) {
+            _products.clear();
+            for (int i = 0; i < response.data['rows'].length; i++) {
+              _products.add(Product.fromJson(response.data['rows'][i]));
+            }
+            update();
+            return true;
+          }
+        } else {
+          print('fetching more... page= $_categoryPages limit = $_limits category = $category');
+          final response = await _dio.get("/data/products/category?page=$_categoryPages&size=$_limits&category=$category");
+          print(_products.length);
+          if (response.statusCode == 200) {
+            if (response.data['rows'].isNotEmpty) {
+              for (var i = 0; i < response.data['rows'].length; i++) {
+                _products.add(Product.fromJson(response.data['rows'][i]));
+              }
+              _categoryPages = _categoryPages + 1;
+              print('next page: $_categoryPages');
               update();
             } else {
               return false;

@@ -115,8 +115,8 @@ Widget buildLoaderFooter(BuildContext context, LoadStatus? mode) {
   } else if (mode == LoadStatus.canLoading) {
     body = const Text("release to load more");
   } else if (mode == LoadStatus.noMore) {
-    // body = const SizedBox.shrink();
-    body = const Icon(Icons.done);
+    body = const SizedBox.shrink();
+    // body = const Icon(Icons.done);
   } else {
     body = const Text("No more Data");
   }

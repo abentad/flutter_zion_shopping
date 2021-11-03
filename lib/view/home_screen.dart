@@ -107,6 +107,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       GestureDetector(
                                         onTap: () {
                                           setState(() {
+                                            if (_selectedIndex != index) {
+                                              Get.find<ApiController>().getProducts(true);
+                                            }
                                             _selectedIndex = index;
                                           });
                                           print(_selectedIndex);
@@ -134,6 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   onTap: () {
                                     setState(() {
                                       _selectedIndex = index;
+                                      Get.find<ApiController>().getProductsByCategory(true, Get.find<ProductController>().homeScreenCategories[index - 1]['name']);
                                     });
                                     print(_selectedIndex);
                                   },
