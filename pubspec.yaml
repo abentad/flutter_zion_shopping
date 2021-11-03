@@ -39,6 +39,7 @@ dependencies:
   material_design_icons_flutter: 5.0.5955-rc.1
   flutter_windowmanager: ^0.2.0
   share_plus: ^3.0.4
+  image_downloader: ^0.30.0
   
 dev_dependencies:
   flutter_test:

@@ -6,11 +6,11 @@ import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
 import 'package:flutter_node_auth/view/product/product_image_detail.dart';
+import 'package:flutter_node_auth/view/product/product_screen_helper.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:transition/transition.dart';
 import 'package:get/get.dart' as getter;
@@ -209,23 +209,16 @@ class _ProductDetailState extends State<ProductDetail> {
                           Row(
                             children: [
                               Container(
-                                margin: const EdgeInsets.all(10.0),
                                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: const Color(0xfff2f2f2)),
                                 child: IconButton(
-                                  onPressed: () {
-                                    Share.share("""
-                                    ${controller.products[widget.selectedProductIndex].image}\n
-                                    ${controller.products[widget.selectedProductIndex].name}\n
-                                    ${controller.products[widget.selectedProductIndex].price}\n
-                                    Shared from Hooli Mart App
-                                    """);
+                                  onPressed: () async {
+                                    shareProduct(controller, widget.selectedProductIndex);
                                   },
                                   icon: const Icon(MdiIcons.share),
                                 ),
                               ),
                               SizedBox(width: size.width * 0.02),
                               Container(
-                                margin: const EdgeInsets.all(10.0),
                                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: const Color(0xfff2f2f2)),
                                 child: IconButton(
                                   onPressed: () {},
@@ -312,7 +305,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         SizedBox(width: size.width * 0.02),
                         MaterialButton(
                           onPressed: () {
-                            callNumber("+251" + controller.products[widget.selectedProductIndex].posterPhoneNumber.toString());
+                            callNumber(controller.products[widget.selectedProductIndex].posterPhoneNumber.toString());
                           },
                           color: Colors.white,
                           splashColor: Colors.grey.shade200,
