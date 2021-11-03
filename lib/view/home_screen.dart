@@ -1,54 +1,21 @@
-import 'dart:math';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
+import 'package:flutter_node_auth/controller/product_controller.dart';
 import 'package:flutter_node_auth/controller/theme_controller.dart';
-import 'package:flutter_node_auth/utils/app_helpers.dart';
-import 'package:flutter_node_auth/view/app_setting_screens/themes_screen.dart';
 import 'package:flutter_node_auth/view/components/home_components.dart';
-import 'package:flutter_node_auth/view/components/widgets.dart';
+import 'package:flutter_node_auth/view/home_screen/home_screen_helpers.dart';
 import 'package:flutter_node_auth/view/product/product_add.dart';
 import 'package:flutter_node_auth/view/product/product_detail.dart';
 import 'package:flutter_node_auth/view/settings.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
-import 'dart:math' as math;
-
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate({
-    required this.minHeight,
-    required this.maxHeight,
-    required this.child,
-  });
-
-  final double minHeight;
-  final double maxHeight;
-  final Widget child;
-
-  @override
-  double get minExtent => minHeight;
-  @override
-  double get maxExtent => math.max(maxHeight, minHeight);
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return SizedBox.expand(child: child);
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return maxHeight != oldDelegate.maxHeight || minHeight != oldDelegate.minHeight || child != oldDelegate.child;
-  }
-}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -58,137 +25,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // final List<String> categories = ["Cars", "Electronics", "Jobs", "Clothes", "Shoes", "House Hold"];
-  final List<Map<String, dynamic>> categories = [
-    {"name": "Cars", "icon": Icons.car_rental},
-    {"name": "Electronics", "icon": Icons.laptop},
-    {"name": "Jobs", "icon": Icons.work},
-    {"name": "Clothes", "icon": Icons.shopping_bag},
-    {"name": "Shoes", "icon": Icons.handyman},
-    {"name": "Houses", "icon": Icons.house},
-    {},
-  ];
+  final RefreshController _refreshController = RefreshController(initialRefresh: false);
   late ScrollController _hideButtonController;
   late bool _isVisible;
-
-  @override
-  void initState() {
-    super.initState();
-    // _createBottomBannerAd();
-    // _createInlineBannerAd();
-    _isVisible = true;
-    _hideButtonController = ScrollController();
-    _hideButtonController.addListener(() {
-      if (_hideButtonController.position.userScrollDirection == ScrollDirection.reverse) {
-        if (_isVisible == true) {
-          /* only set when the previous state is false
-             * Less widget rebuilds 
-             */
-          print("**** $_isVisible up"); //Move IO away from setState
-          setState(() {
-            _isVisible = false;
-          });
-        }
-      } else {
-        if (_hideButtonController.position.userScrollDirection == ScrollDirection.forward) {
-          if (_isVisible == false) {
-            /* only set when the previous state is false
-               * Less widget rebuilds 
-               */
-            print("**** $_isVisible down"); //Move IO away from setState
-            setState(() {
-              _isVisible = true;
-            });
-          }
-        }
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    // _bottomBannerAd.dispose();
-    // _inlineBannerAd.dispose();
-    _hideButtonController.dispose();
-  }
-
-  final RefreshController _refreshController = RefreshController(initialRefresh: false);
-  void _onLoading() async {
-    // monitor network fetch
-    try {
-      bool result = await Get.find<ApiController>().getProducts(false);
-      // if failed,use loadFailed(),if no data return,use LoadNodata()
-      if (result) {
-        _refreshController.loadComplete();
-      } else {
-        _refreshController.loadNoData();
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void _onRefresh() async {
-    // monitor network fetch
-    bool result = await Get.find<ApiController>().getProducts(true);
-    if (result) {
-      _refreshController.loadComplete();
-    } else {
-      _refreshController.loadNoData();
-      // _refreshController.loadFailed();
-    }
-    // if failed,use refreshFailed()
-    _refreshController.refreshCompleted();
-  }
-
-  //-------bottombannerad
-  // late BannerAd _bottomBannerAd;
-  // bool _isBottomBannerAdLoaded = false;
-
-  // void _createBottomBannerAd() {
-  //   _bottomBannerAd = BannerAd(
-  //     size: AdSize.banner,
-  //     adUnitId: AdHelper.bannerAdUnitId,
-  //     request: const AdRequest(),
-  //     listener: BannerAdListener(
-  //       onAdLoaded: (_) {
-  //         setState(() {
-  //           _isBottomBannerAdLoaded = true;
-  //         });
-  //       },
-  //       onAdFailedToLoad: (ad, error) {
-  //         ad.dispose();
-  //       },
-  //     ),
-  //   );
-  //   _bottomBannerAd.load();
-  // }
-
-  //--------------
-  //--------------inlinebannerad--
-  // final _inlineAdIndex = 3;
-  // late BannerAd _inlineBannerAd;
-  // bool _isInlineBannerAdLoaded = false;
-
-  // void _createInlineBannerAd() {
-  //   _inlineBannerAd = BannerAd(
-  //     size: AdSize.mediumRectangle,
-  //     adUnitId: AdHelper.bannerAdUnitId,
-  //     request: const AdRequest(),
-  //     listener: BannerAdListener(onAdLoaded: (_) {
-  //       print('inline ad loaded');
-  //       setState(() {
-  //         _isInlineBannerAdLoaded = true;
-  //       });
-  //     }, onAdFailedToLoad: (ad, error) {
-  //       print('inline ad failed');
-  //       ad.dispose();
-  //     }),
-  //   );
-  //   _inlineBannerAd.load();
-  // }
-  //------------------------
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -198,24 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return GetBuilder<ThemeController>(
       builder: (controller) => Scaffold(
         backgroundColor: controller.defaultTheme['bgColor'],
-        drawer: Drawer(
-          child: Container(
-            decoration: BoxDecoration(
-              color: controller.defaultTheme['bgColor'],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomMaterialButton(
-                  onPressed: () {
-                    Navigator.push(context, CupertinoPageRoute(builder: (context) => const ThemesScreen()));
-                  },
-                  btnLabel: "Themes",
-                ),
-              ],
-            ),
-          ),
-        ),
+        drawer: buildDrawer(controller, context),
         floatingActionButton: Visibility(
           visible: _isVisible,
           child: FloatingActionButton(
@@ -236,33 +59,13 @@ class _HomeScreenState extends State<HomeScreen> {
             onRefresh: _onRefresh,
             header: const WaterDropHeader(
                 refresh: CupertinoActivityIndicator(), complete: SizedBox.shrink(), completeDuration: Duration(milliseconds: 100), waterDropColor: Colors.teal),
-            footer: CustomFooter(
-              builder: (context, mode) {
-                Widget body;
-                if (mode == LoadStatus.idle) {
-                  body = const Text("pull up");
-                } else if (mode == LoadStatus.loading) {
-                  //TODO: put your custom loading animation here
-                  body = const CupertinoActivityIndicator();
-                } else if (mode == LoadStatus.failed) {
-                  body = const Text("Load Failed!Click retry!");
-                } else if (mode == LoadStatus.canLoading) {
-                  body = const Text("release to load more");
-                } else if (mode == LoadStatus.noMore) {
-                  // body = const SizedBox.shrink();
-                  body = const Icon(Icons.done);
-                } else {
-                  body = const Text("No more Data");
-                }
-                return SizedBox(height: 55.0, child: Center(child: body));
-              },
-            ),
+            footer: CustomFooter(builder: buildLoaderFooter),
             child: CustomScrollView(
               controller: _hideButtonController,
               slivers: [
                 SliverPersistentHeader(
                   floating: true,
-                  delegate: _SliverAppBarDelegate(
+                  delegate: SliverAppBarDelegate(
                     minHeight: size.height * 0.19,
                     maxHeight: size.height * 0.19,
                     child: Container(
@@ -291,24 +94,34 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           SizedBox(height: size.height * 0.02),
-                          Expanded(
+                          SizedBox(
+                            height: size.height * 0.07,
                             child: ListView.builder(
                               physics: const BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
-                              itemCount: categories.length,
+                              itemCount: Get.find<ProductController>().homeScreenCategories.length,
                               itemBuilder: (context, index) {
                                 if (index == 0) {
                                   return Row(
                                     children: [
-                                      Container(
-                                        margin: index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
-                                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5.0),
-                                          color: const Color(0xff444941),
-                                          border: Border.all(color: const Color(0xfff8f8f8), width: 1.0),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            _selectedIndex = index;
+                                          });
+                                          print(_selectedIndex);
+                                        },
+                                        child: Container(
+                                          margin: index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
+                                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5.0),
+                                            color: _selectedIndex == 0 ? const Color(0xff444941) : const Color(0xfff2f2f2),
+                                            border:
+                                                _selectedIndex == 0 ? Border.all(color: const Color(0xfff8f8f8), width: 1.0) : Border.all(color: Colors.grey.shade300, width: 1.0),
+                                          ),
+                                          child: Center(child: Text('All', style: TextStyle(color: _selectedIndex == 0 ? Colors.white : Colors.black))),
                                         ),
-                                        child: const Center(child: Text('All', style: TextStyle(color: Colors.white))),
                                       ),
                                       Container(
                                         margin: const EdgeInsets.only(bottom: 10.0, right: 10.0),
@@ -317,20 +130,31 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ],
                                   );
                                 }
-                                return Container(
-                                  margin: index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
-                                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50.0),
-                                    color: const Color(0xfff2f2f2),
-                                    border: Border.all(color: Colors.grey.shade300, width: 1.0),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(categories[index]['icon']),
-                                      SizedBox(width: size.width * 0.02),
-                                      Center(child: Text(categories[index - 1]['name'], style: const TextStyle(color: Colors.black))),
-                                    ],
+                                return GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedIndex = index;
+                                    });
+                                    print(_selectedIndex);
+                                  },
+                                  child: Container(
+                                    margin: index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50.0),
+                                      color: _selectedIndex == index ? const Color(0xff444941) : const Color(0xfff2f2f2),
+                                      border:
+                                          _selectedIndex == index ? Border.all(color: const Color(0xfff8f8f8), width: 1.0) : Border.all(color: Colors.grey.shade300, width: 1.0),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(Get.find<ProductController>().homeScreenCategories[index - 1]['icon'], color: _selectedIndex == index ? Colors.white : Colors.black),
+                                        SizedBox(width: size.width * 0.02),
+                                        Center(
+                                            child: Text(Get.find<ProductController>().homeScreenCategories[index - 1]['name'],
+                                                style: TextStyle(color: _selectedIndex == index ? Colors.white : Colors.black))),
+                                      ],
+                                    ),
                                   ),
                                 );
                               },
@@ -366,74 +190,63 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
 
-class ProductCard extends StatelessWidget {
-  const ProductCard({Key? key, required this.controller, required this.themeController, required this.index, required this.size, this.radiusDouble = 15.0}) : super(key: key);
-  final ApiController controller;
-  final int index;
-  final Size size;
-  final double radiusDouble;
-  final ThemeController themeController;
-  double doubleInRange(Random source, num start, num end) => source.nextDouble() * (end - start) + start;
+  void controlScrollDirection() {
+    _isVisible = true;
+    _hideButtonController = ScrollController();
+    _hideButtonController.addListener(() {
+      if (_hideButtonController.position.userScrollDirection == ScrollDirection.reverse) {
+        if (_isVisible == true) {
+          print("**** $_isVisible up");
+          setState(() {
+            _isVisible = false;
+          });
+        }
+      } else {
+        if (_hideButtonController.position.userScrollDirection == ScrollDirection.forward) {
+          if (_isVisible == false) {
+            print("**** $_isVisible down");
+            setState(() {
+              _isVisible = true;
+            });
+          }
+        }
+      }
+    });
+  }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 5.0),
-            decoration: BoxDecoration(
-              color: const Color(0xfff2f2f2),
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
-              // boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
-              child: CachedNetworkImage(
-                imageUrl: '$kbaseUrl/${controller.products[index].image}',
-                placeholder: (context, url) => Container(
-                  height: size.height * 0.15,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
-                  ),
-                ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-              ),
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.symmetric(horizontal: 5.0),
-            padding: const EdgeInsets.only(left: 10.0),
-            decoration: BoxDecoration(
-              color: themeController.defaultTheme['greyishColor'],
-              // color: Colors.black,
-              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(radiusDouble), bottomRight: Radius.circular(radiusDouble)),
-              // boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: size.height * 0.01),
-                Text(controller.products[index].name.capitalize.toString(),
-                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: themeController.defaultTheme['blackColor'])),
-                SizedBox(height: size.height * 0.01),
-                Text(
-                  '${formatPrice(controller.products[index].price)} birr',
-                  style: TextStyle(fontSize: 15.0, color: themeController.defaultTheme['greyColor']),
-                ),
-                SizedBox(height: size.height * 0.02),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+  void initState() {
+    super.initState();
+    controlScrollDirection();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _hideButtonController.dispose();
+  }
+
+  void _onLoading() async {
+    try {
+      bool result = await Get.find<ApiController>().getProducts(false);
+      if (result) {
+        _refreshController.loadComplete();
+      } else {
+        _refreshController.loadNoData();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void _onRefresh() async {
+    bool result = await Get.find<ApiController>().getProducts(true);
+    if (result) {
+      _refreshController.loadComplete();
+    } else {
+      _refreshController.loadNoData();
+    }
+    _refreshController.refreshCompleted();
   }
 }

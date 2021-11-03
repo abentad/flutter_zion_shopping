@@ -38,6 +38,7 @@ dependencies:
   money_formatter: ^0.0.3
   material_design_icons_flutter: 5.0.5955-rc.1
   flutter_windowmanager: ^0.2.0
+  share_plus: ^3.0.4
   
 dev_dependencies:
   flutter_test:

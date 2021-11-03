@@ -10,6 +10,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:transition/transition.dart';
 import 'package:get/get.dart' as getter;
@@ -208,21 +209,24 @@ class _ProductDetailState extends State<ProductDetail> {
                           Row(
                             children: [
                               Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
+                                margin: const EdgeInsets.all(10.0),
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: const Color(0xfff2f2f2)),
                                 child: IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Share.share("""
+                                    ${controller.products[widget.selectedProductIndex].image}\n
+                                    ${controller.products[widget.selectedProductIndex].name}\n
+                                    ${controller.products[widget.selectedProductIndex].price}\n
+                                    Shared from Hooli Mart App
+                                    """);
+                                  },
                                   icon: const Icon(MdiIcons.share),
                                 ),
                               ),
                               SizedBox(width: size.width * 0.02),
                               Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
+                                margin: const EdgeInsets.all(10.0),
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: const Color(0xfff2f2f2)),
                                 child: IconButton(
                                   onPressed: () {},
                                   icon: const Icon(MdiIcons.flag),
