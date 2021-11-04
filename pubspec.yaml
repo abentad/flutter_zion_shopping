@@ -40,6 +40,7 @@ dependencies:
   flutter_windowmanager: ^0.2.0
   share_plus: ^3.0.4
   image_downloader: ^0.30.0
+  fluttertoast: ^8.0.8
   
 dev_dependencies:
   flutter_test:

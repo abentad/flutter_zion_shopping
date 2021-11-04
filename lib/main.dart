@@ -14,15 +14,7 @@ import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-// class MyHttpOverrides extends HttpOverrides {
-//   @override
-//   HttpClient createHttpClient(SecurityContext? context) {
-//     return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-//   }
-// }
-
 void main() async {
-  // HttpOverrides.global = MyHttpOverrides();
   //ad initialization
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();

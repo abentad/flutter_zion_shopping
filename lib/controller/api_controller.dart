@@ -280,6 +280,14 @@ class ApiController extends GetxController {
     }
   }
 
+  int getSellerProductViews() {
+    int sum = 0;
+    for (var product in _sellerProducts) {
+      sum = sum + product.views;
+    }
+    return sum;
+  }
+
   void resetProductImagesAndProductViews() {
     _productImages = [];
     _productViews = "  ";

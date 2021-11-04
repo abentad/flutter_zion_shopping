@@ -197,21 +197,61 @@ class _ProductDetailState extends State<ProductDetail> {
                             ),
                             Row(
                               children: [
-                                Container(
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: const Color(0xfff2f2f2)),
-                                  child: IconButton(
-                                    onPressed: () async {
+                                Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    onTap: () async {
                                       shareProduct(controller, widget.selectedProductIndex);
                                     },
-                                    icon: const Icon(MdiIcons.share),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: const Color(0xfff2f2f2)),
+                                      child: const Center(
+                                        child: Icon(MdiIcons.share, size: 32.0),
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 SizedBox(width: size.width * 0.02),
-                                Container(
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: const Color(0xfff2f2f2)),
-                                  child: IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(MdiIcons.flag),
+                                Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    onTap: () async {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text("Report"),
+                                          content: TextFormField(
+                                            autofocus: true,
+                                            maxLines: 5,
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Colors.grey.shade300)),
+                                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Colors.grey.shade300)),
+                                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Colors.grey.shade300)),
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(context),
+                                              child: const Text('Cancel'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {},
+                                              child: const Text('Submit'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: const Color(0xfff2f2f2)),
+                                      child: const Center(
+                                        child: Icon(MdiIcons.flag, size: 32.0),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -287,7 +327,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                       style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
                                     ),
                                     SizedBox(height: size.height * 0.005),
-                                    Text(widget.productsList[widget.selectedProductIndex].posterPhoneNumber.toString()),
+                                    Text("+251" + widget.productsList[widget.selectedProductIndex].posterPhoneNumber.toString()),
                                   ],
                                 )
                               ],

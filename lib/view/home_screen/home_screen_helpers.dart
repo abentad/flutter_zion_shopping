@@ -122,70 +122,87 @@ Widget buildDrawer(ThemeController controller, BuildContext context) {
 }
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({Key? key, required this.products, required this.themeController, required this.index, required this.size, this.radiusDouble = 15.0}) : super(key: key);
-  // final ApiController controller;
+  const ProductCard(
+      {Key? key,
+      required this.products,
+      this.hasShadows = false,
+      required this.ontap,
+      required this.themeController,
+      required this.index,
+      required this.size,
+      this.radiusDouble = 15.0})
+      : super(key: key);
   final List<Product> products;
   final int index;
   final Size size;
   final double radiusDouble;
   final ThemeController themeController;
+  final bool hasShadows;
+  final Function() ontap;
   double doubleInRange(Random source, num start, num end) => source.nextDouble() * (end - start) + start;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 5.0),
-            decoration: BoxDecoration(
-              color: const Color(0xfff2f2f2),
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
-              // boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
-              child: CachedNetworkImage(
-                imageUrl: '$kbaseUrl/${products[index].image}',
-                placeholder: (context, url) => Container(
-                  height: size.height * 0.15,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
+      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+      decoration: BoxDecoration(
+        boxShadow: [
+          hasShadows
+              ? BoxShadow(color: Colors.grey.shade400, offset: const Offset(2, 5), blurRadius: 10.0)
+              : const BoxShadow(color: Colors.transparent, offset: Offset(2, 5), blurRadius: 10.0),
+        ],
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(radiusDouble),
+        onTap: ontap,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xfff2f2f2),
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
+                child: CachedNetworkImage(
+                  imageUrl: '$kbaseUrl/${products[index].image}',
+                  placeholder: (context, url) => Container(
+                    height: size.height * 0.15,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(radiusDouble), topRight: Radius.circular(radiusDouble)),
+                    ),
                   ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
-          ),
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.symmetric(horizontal: 5.0),
-            padding: const EdgeInsets.only(left: 10.0),
-            decoration: BoxDecoration(
-              color: themeController.defaultTheme['greyishColor'],
-              // color: Colors.black,
-              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(radiusDouble), bottomRight: Radius.circular(radiusDouble)),
-              // boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 8), blurRadius: 10.0)],
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.only(left: 10.0),
+              decoration: BoxDecoration(
+                color: themeController.defaultTheme['greyishColor'],
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(radiusDouble), bottomRight: Radius.circular(radiusDouble)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: size.height * 0.01),
+                  Text(products[index].name.capitalize.toString(),
+                      style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: themeController.defaultTheme['blackColor'])),
+                  SizedBox(height: size.height * 0.01),
+                  Text(
+                    '${formatPrice(products[index].price)} birr',
+                    style: TextStyle(fontSize: 15.0, color: themeController.defaultTheme['greyColor']),
+                  ),
+                  SizedBox(height: size.height * 0.02),
+                ],
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: size.height * 0.01),
-                Text(products[index].name.capitalize.toString(), style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: themeController.defaultTheme['blackColor'])),
-                SizedBox(height: size.height * 0.01),
-                Text(
-                  '${formatPrice(products[index].price)} birr',
-                  style: TextStyle(fontSize: 15.0, color: themeController.defaultTheme['greyColor']),
-                ),
-                SizedBox(height: size.height * 0.02),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
