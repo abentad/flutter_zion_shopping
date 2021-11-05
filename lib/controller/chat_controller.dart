@@ -1,7 +1,6 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_node_auth/main.dart';
 import 'package:get/get.dart';
 
 class ChatController extends GetxController {
@@ -16,32 +15,30 @@ class ChatController extends GetxController {
 
   _setupNotificationListener() {
     print('listener is on');
-    //
-    AndroidInitializationSettings _initializationSettingsAndroid = const AndroidInitializationSettings('@mipmap/ic_launcher');
-    InitializationSettings _initializationSettings = InitializationSettings(android: _initializationSettingsAndroid);
-    flutterLocalNotificationsPlugin.initialize(_initializationSettings);
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null && !kIsWeb) {
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                channelDescription: channel.description,
-                icon: 'launch_background',
-              ),
-            ));
+        createBasicNotificaton(title: notification.title.toString(), body: notification.body.toString());
       }
       print(notification.hashCode);
       print(notification!.title);
       print(notification.body.toString());
     });
-    //
+  }
+
+  Future<void> createBasicNotificaton({required String title, required String body}) async {
+    await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+      id: createUniqueId(),
+      channelKey: 'basic_channel',
+      title: title,
+      body: body,
+      notificationLayout: NotificationLayout.Default,
+    ));
+  }
+
+  int createUniqueId() {
+    return DateTime.now().millisecond;
   }
 }
