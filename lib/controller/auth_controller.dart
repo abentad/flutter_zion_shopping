@@ -27,7 +27,9 @@ class AuthController extends GetxController {
   User? get currentUser => _currentUser;
 
   AuthController() {
-    checkUser();
+    Future.delayed(const Duration(milliseconds: 400), () {
+      checkUser();
+    });
   }
 
   void checkUser() async {

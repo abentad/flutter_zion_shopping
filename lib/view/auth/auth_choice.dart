@@ -33,14 +33,13 @@ class AuthChoice extends StatelessWidget {
             SizedBox(height: size.height * 0.02),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0),
-              child: Text('Manage Your Expenses Seemlessly.',
-                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w500, color: Colors.grey), textAlign: TextAlign.center),
+              child: Text('Manage Your Expenses Seemlessly.', style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w500, color: Colors.grey), textAlign: TextAlign.center),
             ),
             SizedBox(height: size.height * 0.12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: MaterialButton(
-                onPressed: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => SignUp())),
+                onPressed: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => const SignUp())),
                 color: Colors.black,
                 minWidth: double.infinity,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),

@@ -213,7 +213,6 @@ Widget buildLoaderFooter(BuildContext context, LoadStatus? mode) {
   if (mode == LoadStatus.idle) {
     body = const Text("pull up");
   } else if (mode == LoadStatus.loading) {
-    //TODO: put your custom loading animation here
     body = const CupertinoActivityIndicator();
   } else if (mode == LoadStatus.failed) {
     body = const Text("Load Failed!Click retry!");
