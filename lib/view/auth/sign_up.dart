@@ -1,21 +1,31 @@
 import 'dart:io';
-
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
+import 'package:flutter_node_auth/view/auth/auth_widgets.dart';
 import 'package:flutter_node_auth/view/home_screen.dart';
 import 'package:flutter_node_auth/view/auth/sign_in.dart';
+import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:get/get.dart';
 import 'package:get/instance_manager.dart';
 import 'package:image_picker/image_picker.dart';
 
-class SignUp extends StatelessWidget {
-  SignUp({Key? key}) : super(key: key);
+class SignUp extends StatefulWidget {
+  const SignUp({Key? key}) : super(key: key);
 
+  @override
+  State<SignUp> createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+
+  bool _isPassValidatorVisible = false;
+  bool _isPassValid = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,111 +54,87 @@ class SignUp extends StatelessWidget {
                 SizedBox(height: size.height * 0.06),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: TextFormField(
+                  child: CustomTextFormField(
+                    onchanged: (_) {},
                     controller: _usernameController,
-                    cursorColor: Colors.black,
-                    style: const TextStyle(fontSize: 18.0),
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                      filled: true,
-                      fillColor: const Color(0xfff2f2f2),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 27),
-                        child: Text("Username", style: TextStyle(fontSize: 16.0, color: Colors.grey.shade600)),
-                      ),
-                      prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                    ),
+                    keyboardType: TextInputType.name,
+                    paddingRight: 20.0,
+                    prefixText: "Username",
                   ),
                 ),
                 SizedBox(height: size.height * 0.02),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: TextFormField(
+                  child: CustomTextFormField(
+                    onchanged: (_) {},
                     controller: _emailController,
-                    cursorColor: Colors.black,
-                    style: const TextStyle(fontSize: 18.0),
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                      filled: true,
-                      fillColor: const Color(0xfff2f2f2),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 60),
-                        child: Text("Email", style: TextStyle(fontSize: 16.0, color: Colors.grey.shade600)),
-                      ),
-                      prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    paddingRight: 53.0,
+                    prefixText: "Email",
                   ),
                 ),
                 SizedBox(height: size.height * 0.02),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: TextFormField(
-                    keyboardType: TextInputType.phone,
+                  child: CustomTextFormField(
+                    onchanged: (_) {},
                     controller: _phoneNumberController,
-                    cursorColor: Colors.black,
-                    style: const TextStyle(fontSize: 18.0),
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                      filled: true,
-                      fillColor: const Color(0xfff2f2f2),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 30),
-                        child: Text("+251", style: TextStyle(fontSize: 16.0, color: Colors.grey.shade600)),
-                      ),
-                      prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                    ),
+                    keyboardType: TextInputType.phone,
+                    paddingRight: 55.5,
+                    prefixText: "+251",
                   ),
                 ),
                 SizedBox(height: size.height * 0.02),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: TextFormField(
+                  child: CustomTextFormField(
+                    onchanged: (value) {
+                      setState(() {
+                        _isPassValidatorVisible = true;
+                      });
+                    },
                     controller: _passwordController,
-                    cursorColor: Colors.black,
-                    style: const TextStyle(fontSize: 18.0),
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                      filled: true,
-                      fillColor: const Color(0xfff2f2f2),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                      suffixIcon: const Icon(Icons.visibility_off),
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 30),
-                        child: Text("Password", style: TextStyle(fontSize: 16.0, color: Colors.grey.shade600)),
-                      ),
-                      prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                    ),
+                    keyboardType: TextInputType.name,
+                    paddingRight: 23.0,
+                    prefixText: "Password",
+                    isObsecure: true,
+                    hasPasswordVisibilityButton: true,
                   ),
                 ),
                 SizedBox(height: size.height * 0.02),
-                const Padding(
-                  padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                  child: Text('Your password must be 8 or more characters long & contain a mix of upper & lower case letter, numbers & symbols.',
-                      style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400, color: Colors.grey)),
-                ),
+                _isPassValidatorVisible
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: FlutterPwValidator(
+                          controller: _passwordController,
+                          minLength: 8,
+                          width: size.width * 0.9,
+                          height: size.height * 0.05,
+                          onSuccess: () {
+                            setState(() {
+                              _isPassValid = true;
+                            });
+                          },
+                        ),
+                      )
+                    : const SizedBox.shrink(),
                 SizedBox(height: size.height * 0.04),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: MaterialButton(
                     onPressed: () async {
-                      if (_usernameController.text != "" && _emailController.text != "" && _passwordController.text != "" && _phoneNumberController.text != "") {
-                        File file = await Get.find<AuthController>().chooseImage(ImageSource.gallery);
-                        bool _result = await Get.find<AuthController>()
-                            .signUpUser(_usernameController.text, _emailController.text, _phoneNumberController.text, _passwordController.text, file);
-                        if (_result) {
-                          Get.offAll(() => const HomeScreen(), transition: Transition.fade);
+                      if (_usernameController.text.isNotEmpty &&
+                          _emailController.text.isNotEmpty &&
+                          _passwordController.text.isNotEmpty &&
+                          _phoneNumberController.text.isNotEmpty &&
+                          _isPassValid) {
+                        if (EmailValidator.validate(_emailController.text.trim())) {
+                          File file = await Get.find<AuthController>().chooseImage(ImageSource.gallery);
+                          bool _result = await Get.find<AuthController>()
+                              .signUpUser(_usernameController.text, _emailController.text, _phoneNumberController.text, _passwordController.text, file);
+                          if (_result) {
+                            Get.offAll(() => const HomeScreen(), transition: Transition.fade);
+                          }
                         }
                       }
                     },
@@ -183,7 +169,6 @@ class SignUp extends StatelessWidget {
                   children: [
                     const Text("Already have an account?", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0)),
                     TextButton(
-                      // onPressed: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => const SignIn())),
                       onPressed: () => Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => SignIn()), (route) => route.isFirst),
                       child: const Text(
                         'Sign in',

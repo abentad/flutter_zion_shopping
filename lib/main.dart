@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_node_auth/constants/app_constants.dart';
@@ -17,6 +18,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 void main() async {
   //ad initialization
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   MobileAds.instance.initialize();
   //system orientation and statusbar color
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
@@ -94,9 +95,11 @@ class SignIn extends StatelessWidget {
                   child: MaterialButton(
                     onPressed: () async {
                       if (_emailController.text != "" && _passwordController.text != "") {
-                        bool _result = await Get.find<AuthController>().signInUser(_emailController.text, _passwordController.text);
-                        if (_result) {
-                          Get.offAll(() => const HomeScreen(), transition: Transition.fade);
+                        if (EmailValidator.validate(_emailController.text.trim())) {
+                          bool _result = await Get.find<AuthController>().signInUser(_emailController.text, _passwordController.text);
+                          if (_result) {
+                            Get.offAll(() => const HomeScreen(), transition: Transition.fade);
+                          }
                         }
                       }
                     },
