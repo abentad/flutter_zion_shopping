@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1015233493587",
+    "project_id": "shopri-f9a43",
+    "storage_bucket": "shopri-f9a43.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015233493587:android:a4d18f3360af5d1f9224a6",
+        "android_client_info": {
+          "package_name": "com.rentoch.shopri"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1015233493587-k7q7rq1bc1nd0lc1318k78h8ifafp96e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdEuydjsFEt9rcJwwxbDj4UARDP1MJFgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1015233493587-k7q7rq1bc1nd0lc1318k78h8ifafp96e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

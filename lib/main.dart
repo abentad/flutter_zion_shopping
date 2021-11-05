@@ -18,7 +18,7 @@ void main() async {
   //ad initialization
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
-  //system orientation and statusbar colors
+  //system orientation and statusbar color
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarIconBrightness: Brightness.dark));
   //disable screenshot or screen recording

@@ -41,6 +41,9 @@ dependencies:
   share_plus: ^3.0.4
   image_downloader: ^0.30.0
   fluttertoast: ^8.0.8
+  ###
+  firebase_core: ^1.9.0
+  cloud_firestore: ^3.0.0
   
 dev_dependencies:
   flutter_test:
