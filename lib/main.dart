@@ -19,9 +19,26 @@ import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+Future<void> createBasicNotificaton({required String title, required String body}) async {
+  await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+    id: createUniqueId(),
+    channelKey: 'basic_channel',
+    title: title,
+    body: body,
+    notificationLayout: NotificationLayout.Default,
+  ));
+}
+
+int createUniqueId() {
+  return DateTime.now().millisecond;
+}
+
 //
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+  //TODO: fix sending two notifications when app is in background or terminated
+  createBasicNotificaton(title: message.notification!.title.toString(), body: message.notification!.body.toString());
   print("Handling a background message: ${message.messageId}");
 }
 
@@ -37,9 +54,16 @@ void main() async {
           channelKey: 'basic_channel',
           channelName: 'Basic Channel',
           defaultColor: Colors.teal,
-          importance: NotificationImportance.High,
+          importance: NotificationImportance.Max,
           channelShowBadge: true,
-          ledColor: Colors.purple,
+          ledColor: Colors.blue,
+          playSound: true,
+          defaultPrivacy: NotificationPrivacy.Public,
+          defaultRingtoneType: DefaultRingtoneType.Notification,
+          enableVibration: true,
+          enableLights: true,
+          ledOffMs: 800,
+          ledOnMs: 800,
         ),
       ],
     );
