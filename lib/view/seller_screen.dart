@@ -77,7 +77,7 @@ class SellerScreen extends StatelessWidget {
                     margin: const EdgeInsets.symmetric(horizontal: 10.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
-                      color: const Color(0xfff2f2f2),
+                      color: Colors.white,
                       boxShadow: [BoxShadow(color: Colors.grey.shade400, offset: const Offset(2, 5), blurRadius: 10.0)],
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
