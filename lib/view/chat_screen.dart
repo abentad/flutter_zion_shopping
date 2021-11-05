@@ -1,11 +1,19 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_node_auth/constants/api_path.dart';
+import 'package:flutter_node_auth/model/product.dart';
+import 'package:flutter_node_auth/utils/app_helpers.dart';
+import 'package:get/get_utils/src/extensions/string_extensions.dart';
+import 'package:get_time_ago/get_time_ago.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+  const ChatScreen({Key? key, required this.selectedProductIndex, required this.productsList}) : super(key: key);
+  final int selectedProductIndex;
+  final List<Product> productsList;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -44,11 +52,22 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             SizedBox(width: size.width * 0.04),
-            CircleAvatar(backgroundColor: Colors.teal.shade200),
+            CircleAvatar(
+              radius: size.height * 0.03,
+              backgroundColor: const Color(0xfff2f2f2),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50.0),
+                child: CachedNetworkImage(
+                  imageUrl: widget.productsList[widget.selectedProductIndex].posterProfileAvatar.toString(),
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
             SizedBox(width: size.width * 0.04),
             Column(
-              children: const [
-                Text('Seller name', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 18.0)),
+              children: [
+                Text(widget.productsList[widget.selectedProductIndex].posterName.capitalize.toString(),
+                    style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 18.0)),
               ],
             )
           ],
@@ -74,10 +93,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         text: 'Hi, How are you?  i am ok but how is life to you man i mean what are you up to this days cause i am lost to thing how you are doing',
                         isSender: false,
                         color: Color(0xFFE8E8EE),
-                        sent: true,
-                        delivered: true,
-                        seen: true,
-                        // tail: false,
                       ),
                     ),
                     const Padding(
@@ -87,7 +102,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         isSender: true,
                         color: Color(0xFFE8E8EE),
                         sent: true,
-                        // tail: false,
+                        seen: true,
                       ),
                     ),
                     const Padding(
@@ -96,9 +111,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         text: 'Hi, How are you?  i am ok but how is life to you man i mean what are you up to this days cause i am lost to thing how you are doing',
                         isSender: false,
                         color: Color(0xFFE8E8EE),
-                        sent: true,
-                        seen: true,
-                        // tail: false,
                       ),
                     ),
                     const Padding(
@@ -108,7 +120,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         isSender: true,
                         color: Color(0xFFE8E8EE),
                         sent: true,
-                        // tail: false,
+                        seen: true,
                       ),
                     ),
                     const Padding(
@@ -117,9 +129,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         text: 'Hi, How are you?  i am ok but how is life to you man i mean what are you up to this days cause i am lost to thing how you are doing',
                         isSender: false,
                         color: Color(0xFFE8E8EE),
-                        sent: true,
-                        seen: true,
-                        // tail: false,
                       ),
                     ),
                     const Padding(
@@ -129,7 +138,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         isSender: true,
                         color: Color(0xFFE8E8EE),
                         sent: true,
-                        // tail: false,
+                        seen: true,
                       ),
                     ),
                     const Padding(
@@ -138,9 +147,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         text: 'Hi, How are you?  i am ok but how is life to you man i mean what are you up to this days cause i am lost to thing how you are doing',
                         isSender: false,
                         color: Color(0xFFE8E8EE),
-                        sent: true,
-                        seen: true,
-                        // tail: false,
                       ),
                     ),
                     const Padding(
@@ -150,7 +156,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         isSender: true,
                         color: Color(0xFFE8E8EE),
                         sent: true,
-                        // tail: false,
+                        seen: true,
                       ),
                     ),
                     const Padding(
@@ -159,9 +165,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         text: 'Hi, How are you?  i am ok but how is life to you man i mean what are you up to this days cause i am lost to thing how you are doing',
                         isSender: false,
                         color: Color(0xFFE8E8EE),
-                        sent: true,
-                        seen: true,
-                        // tail: false,
                       ),
                     ),
                     SizedBox(height: size.height * 0.1),
@@ -191,18 +194,49 @@ class _ChatScreenState extends State<ChatScreen> {
                               height: size.height * 0.07,
                               width: size.width * 0.14,
                               decoration: BoxDecoration(
-                                color: Colors.orange,
+                                color: const Color(0xfff2f2f2),
                                 borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: CachedNetworkImage(
+                                  imageUrl: kbaseUrl + "/" + widget.productsList[widget.selectedProductIndex].image,
+                                  fit: BoxFit.fill,
+                                ),
                               ),
                             ),
                             SizedBox(width: size.width * 0.04),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text('Item name', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600)),
-                                SizedBox(height: size.height * 0.005),
-                                const Text('Item price', style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400)),
-                              ],
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(widget.productsList[widget.selectedProductIndex].name.capitalize.toString(),
+                                          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600)),
+                                      Text("Posted:  " + GetTimeAgo.parse(widget.productsList[widget.selectedProductIndex].datePosted),
+                                          style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400)),
+                                    ],
+                                  ),
+                                  SizedBox(height: size.height * 0.005),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(formatPrice(widget.productsList[widget.selectedProductIndex].price) + " Birr",
+                                          style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400)),
+                                      Row(
+                                        children: [
+                                          const Icon(MdiIcons.eye, color: Colors.grey),
+                                          SizedBox(width: size.width * 0.02),
+                                          Text(widget.productsList[widget.selectedProductIndex].views.toString(),
+                                              style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14.0)),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -216,13 +250,20 @@ class _ChatScreenState extends State<ChatScreen> {
                 right: 0.0,
                 bottom: 0.0,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  decoration: const BoxDecoration(color: Colors.white),
+                  // padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [BoxShadow(color: Colors.grey.shade300, offset: const Offset(2, -4), blurRadius: 5.0)],
+                  ),
                   child: Row(
                     children: [
                       SizedBox(width: size.width * 0.02),
                       Expanded(
                         child: TextFormField(
+                          onEditingComplete: () {
+                            _messageController.clear();
+                            _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);
+                          },
                           textInputAction: TextInputAction.send,
                           cursorColor: Colors.black,
                           style: const TextStyle(fontSize: 18.0),
@@ -230,20 +271,20 @@ class _ChatScreenState extends State<ChatScreen> {
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                             filled: true,
-                            fillColor: const Color(0xfff2f2f2),
+                            fillColor: Colors.white,
                             hintText: "Message",
                             hintStyle: const TextStyle(color: Colors.grey),
-                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
-                            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0), borderSide: const BorderSide(color: Color(0xfff2f2f2))),
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0), borderSide: const BorderSide(color: Colors.white)),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0), borderSide: const BorderSide(color: Colors.white)),
+                            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0), borderSide: const BorderSide(color: Colors.white)),
                           ),
                         ),
                       ),
-                      SizedBox(width: size.width * 0.04),
+                      SizedBox(width: size.width * 0.06),
                       const SizedBox(
                         child: Icon(MdiIcons.image, color: Colors.black),
                       ),
-                      SizedBox(width: size.width * 0.04),
+                      SizedBox(width: size.width * 0.06),
                     ],
                   ),
                 ),

@@ -361,7 +361,15 @@ class _ProductDetailState extends State<ProductDetail> {
                         Expanded(
                           child: MaterialButton(
                             onPressed: () {
-                              Navigator.push(context, CupertinoPageRoute(builder: (context) => const ChatScreen()));
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => ChatScreen(
+                                    selectedProductIndex: widget.selectedProductIndex,
+                                    productsList: widget.productsList,
+                                  ),
+                                ),
+                              );
                             },
                             color: Colors.teal,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
