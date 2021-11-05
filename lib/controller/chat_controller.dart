@@ -15,6 +15,7 @@ class ChatController extends GetxController {
   }
 
   _setupNotificationListener() {
+    print('listener is on');
     //
     AndroidInitializationSettings _initializationSettingsAndroid = const AndroidInitializationSettings('@mipmap/ic_launcher');
     InitializationSettings _initializationSettings = InitializationSettings(android: _initializationSettingsAndroid);

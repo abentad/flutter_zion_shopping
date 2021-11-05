@@ -7,6 +7,7 @@ import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
+import 'package:flutter_node_auth/view/chat_screen.dart';
 import 'package:flutter_node_auth/view/product/product_image_detail.dart';
 import 'package:flutter_node_auth/view/product/product_screen_helper.dart';
 import 'package:flutter_node_auth/view/seller_screen.dart';
@@ -359,7 +360,9 @@ class _ProductDetailState extends State<ProductDetail> {
                         SizedBox(width: size.width * 0.02),
                         Expanded(
                           child: MaterialButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(context, CupertinoPageRoute(builder: (context) => const ChatScreen()));
+                            },
                             color: Colors.teal,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                             height: 50.0,
