@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
+import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/controller/message_controller.dart';
 import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
@@ -13,9 +14,10 @@ import 'package:get_time_ago/get_time_ago.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key, required this.selectedProductIndex, required this.productsList}) : super(key: key);
+  const ChatScreen({Key? key, required this.selectedProductIndex, this.selectedConversationIndex, required this.productsList}) : super(key: key);
   final int selectedProductIndex;
   final List<Product> productsList;
+  final int? selectedConversationIndex;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -60,7 +62,9 @@ class _ChatScreenState extends State<ChatScreen> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(50.0),
                 child: CachedNetworkImage(
-                  imageUrl: widget.productsList[widget.selectedProductIndex].posterProfileAvatar.toString(),
+                  imageUrl: Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderProfileUrl == Get.find<AuthController>().currentUser!.profile
+                      ? kbaseUrl + "/" + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverProfileUrl
+                      : kbaseUrl + "/" + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderProfileUrl,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -68,7 +72,10 @@ class _ChatScreenState extends State<ChatScreen> {
             SizedBox(width: size.width * 0.04),
             Column(
               children: [
-                Text(widget.productsList[widget.selectedProductIndex].posterName.capitalize.toString(),
+                Text(
+                    Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderName == Get.find<AuthController>().currentUser!.username
+                        ? Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverName.capitalize.toString()
+                        : Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderName.capitalize.toString(),
                     style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 18.0)),
               ],
             )
@@ -86,17 +93,25 @@ class _ChatScreenState extends State<ChatScreen> {
                   return false;
                 },
                 child: GetBuilder<MessageController>(
-                  builder: (controller) => ListView.builder(
-                    controller: _scrollController,
-                    itemCount: controller.messages.length,
-                    itemBuilder: (context, index) => const Padding(
-                      padding: EdgeInsets.only(bottom: 10.0),
-                      child: BubbleSpecialTwo(
-                        text: 'Excepteur minim magna elit magna mollit. Quis sunt laborum enim laboris exercitation Lorem non laborum non tempor esse cillum.',
-                        isSender: false,
-                        color: Color(0xFFE8E8EE),
+                  builder: (controller) => Column(
+                    children: [
+                      SizedBox(height: size.height * 0.12),
+                      Expanded(
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount: controller.messages.length,
+                          itemBuilder: (context, index) => Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: BubbleSpecialTwo(
+                              text: controller.messages[index].messageText,
+                              isSender: controller.messages[index].senderId == Get.find<AuthController>().currentUser!.userId ? true : false,
+                              sent: controller.messages[index].senderId == Get.find<AuthController>().currentUser!.userId ? true : false,
+                              color: const Color(0xFFE8E8EE),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
@@ -179,7 +194,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 right: 0.0,
                 bottom: 0.0,
                 child: Container(
-                  // padding: const EdgeInsets.symmetric(vertical: 5.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     boxShadow: [BoxShadow(color: Colors.grey.shade300, offset: const Offset(2, -4), blurRadius: 5.0)],
@@ -217,7 +231,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

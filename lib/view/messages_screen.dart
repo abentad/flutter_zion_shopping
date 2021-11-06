@@ -56,7 +56,11 @@ class MessagesScreen extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 CupertinoPageRoute(
-                                  builder: (context) => ChatScreen(selectedProductIndex: 0, productsList: Get.find<ApiController>().products),
+                                  builder: (context) => ChatScreen(
+                                    selectedProductIndex: 0,
+                                    productsList: Get.find<ApiController>().products,
+                                    selectedConversationIndex: index,
+                                  ),
                                 ));
                           }
                         },
