@@ -4,8 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
+import 'package:flutter_node_auth/controller/message_controller.dart';
 import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
+import 'package:get/get.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -28,7 +30,7 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
 
     //TODO: use this to scroll to the end of the list view after loading messages
-    Timer(const Duration(milliseconds: 150), () => _scrollController.jumpTo(_scrollController.position.maxScrollExtent));
+    Timer(const Duration(milliseconds: 150), () => Get.find<MessageController>().messages.length > 5 ? _scrollController.jumpTo(_scrollController.position.maxScrollExtent) : null);
   }
 
   @override
@@ -83,92 +85,19 @@ class _ChatScreenState extends State<ChatScreen> {
                   overscroll.disallowGlow();
                   return false;
                 },
-                child: ListView(
-                  controller: _scrollController,
-                  children: [
-                    SizedBox(height: size.height * 0.12),
-                    const Padding(
+                child: GetBuilder<MessageController>(
+                  builder: (controller) => ListView.builder(
+                    controller: _scrollController,
+                    itemCount: controller.messages.length,
+                    itemBuilder: (context, index) => const Padding(
                       padding: EdgeInsets.only(bottom: 10.0),
                       child: BubbleSpecialTwo(
-                        text: 'Hi, How are you?  i am ok but how is life to you man i mean what are you up to this days cause i am lost to thing how you are doing',
+                        text: 'Excepteur minim magna elit magna mollit. Quis sunt laborum enim laboris exercitation Lorem non laborum non tempor esse cillum.',
                         isSender: false,
                         color: Color(0xFFE8E8EE),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10.0),
-                      child: BubbleSpecialTwo(
-                        text: 'bubble special tow with tail',
-                        isSender: true,
-                        color: Color(0xFFE8E8EE),
-                        sent: true,
-                        seen: true,
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10.0),
-                      child: BubbleSpecialTwo(
-                        text: 'Hi, How are you?  i am ok but how is life to you man i mean what are you up to this days cause i am lost to thing how you are doing',
-                        isSender: false,
-                        color: Color(0xFFE8E8EE),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10.0),
-                      child: BubbleSpecialTwo(
-                        text: 'bubble special tow with tail',
-                        isSender: true,
-                        color: Color(0xFFE8E8EE),
-                        sent: true,
-                        seen: true,
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10.0),
-                      child: BubbleSpecialTwo(
-                        text: 'Hi, How are you?  i am ok but how is life to you man i mean what are you up to this days cause i am lost to thing how you are doing',
-                        isSender: false,
-                        color: Color(0xFFE8E8EE),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10.0),
-                      child: BubbleSpecialTwo(
-                        text: 'bubble special tow with tail',
-                        isSender: true,
-                        color: Color(0xFFE8E8EE),
-                        sent: true,
-                        seen: true,
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10.0),
-                      child: BubbleSpecialTwo(
-                        text: 'Hi, How are you?  i am ok but how is life to you man i mean what are you up to this days cause i am lost to thing how you are doing',
-                        isSender: false,
-                        color: Color(0xFFE8E8EE),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10.0),
-                      child: BubbleSpecialTwo(
-                        text: 'bubble special tow with tail',
-                        isSender: true,
-                        color: Color(0xFFE8E8EE),
-                        sent: true,
-                        seen: true,
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10.0),
-                      child: BubbleSpecialTwo(
-                        text: 'Hi, How are you?  i am ok but how is life to you man i mean what are you up to this days cause i am lost to thing how you are doing',
-                        isSender: false,
-                        color: Color(0xFFE8E8EE),
-                      ),
-                    ),
-                    SizedBox(height: size.height * 0.1),
-                  ],
+                  ),
                 ),
               ),
               Positioned(
@@ -194,14 +123,14 @@ class _ChatScreenState extends State<ChatScreen> {
                               height: size.height * 0.07,
                               width: size.width * 0.14,
                               decoration: BoxDecoration(
-                                color: const Color(0xfff2f2f2),
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10.0),
                                 child: CachedNetworkImage(
                                   imageUrl: kbaseUrl + "/" + widget.productsList[widget.selectedProductIndex].image,
-                                  fit: BoxFit.fill,
+                                  fit: BoxFit.contain,
                                 ),
                               ),
                             ),

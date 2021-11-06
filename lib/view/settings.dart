@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
+import 'package:flutter_node_auth/controller/message_controller.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
+import 'package:flutter_node_auth/view/messages_screen.dart';
 import 'package:get/get.dart';
 
 class Settings extends StatelessWidget {
@@ -38,8 +41,18 @@ class Settings extends StatelessWidget {
                     ],
                   ),
                 ),
-                // SizedBox(height: size.height * 0.08),
-
+                SizedBox(height: size.height * 0.08),
+                CustomMaterialButton(
+                  onPressed: () async {
+                    bool result = await Get.find<MessageController>().getConversations(Get.find<AuthController>().currentUser!.userId.toString());
+                    if (result) {
+                      Navigator.push(context, CupertinoPageRoute(builder: (context) => const MessagesScreen()));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Something went wrong')));
+                    }
+                  },
+                  btnLabel: "Messages",
+                ),
                 const Spacer(),
                 CustomMaterialButton(
                   onPressed: () {

@@ -1,1 +1,1 @@
-const String kappName = "Hooli Mart";
+const String kappName = "Shopri";

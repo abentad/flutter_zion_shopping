@@ -157,7 +157,7 @@ class ApiController extends GetxController {
     String posterName = Get.find<AuthController>().currentUser!.username.toString();
     String posterPhoneNumber = Get.find<AuthController>().currentUser!.phoneNumber.toString();
     String posterProfileAvatar = Get.find<AuthController>().currentUser!.profile.toString();
-    String isPendingString = 'true';
+    String isPendingString = 'false';
 
     if (_token != null) {
       List<MultipartFile> _images = [];

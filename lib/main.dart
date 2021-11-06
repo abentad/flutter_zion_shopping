@@ -9,6 +9,7 @@ import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/controller/chat_controller.dart';
 import 'package:flutter_node_auth/controller/lang_controller.dart';
+import 'package:flutter_node_auth/controller/message_controller.dart';
 import 'package:flutter_node_auth/controller/product_controller.dart';
 import 'package:flutter_node_auth/controller/theme_controller.dart';
 import 'package:flutter_node_auth/utils/strings.dart';
@@ -82,6 +83,8 @@ void main() async {
   Get.put<ThemeController>(ThemeController());
   Get.put<ProductController>(ProductController());
   Get.put<ChatController>(ChatController());
+  Get.put<MessageController>(MessageController());
+
   runApp(const MyApp());
 }
 
