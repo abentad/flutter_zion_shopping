@@ -117,6 +117,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                       ),
+                      SizedBox(height: size.height * 0.08),
                     ],
                   ),
                 ),
@@ -221,14 +222,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                 Get.find<AuthController>().currentUser!.userId.toString(),
                                 Get.find<AuthController>().currentUser!.username.toString(),
                               );
-                              _messageController.clear();
                               if (result) {
                                 _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);
+                                _messageController.clear();
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Something went wrong')));
                               }
                             }
-                            _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);
                           },
                           textInputAction: TextInputAction.send,
                           cursorColor: Colors.black,

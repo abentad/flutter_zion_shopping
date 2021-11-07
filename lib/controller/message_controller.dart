@@ -134,6 +134,8 @@ class MessageController extends GetxController {
 
   Future<bool> getMessages(String convId) async {
     String? _token = await _storage.read(key: _tokenKey);
+    joinRoom(convId);
+    print('joined room: ' + convId);
     Dio _dio = Dio(BaseOptions(
       baseUrl: kbaseUrl,
       connectTimeout: 10000,
