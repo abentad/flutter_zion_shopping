@@ -77,10 +77,11 @@ class AuthController extends GetxController {
   }
 
   //signup
-  Future<bool> signUpUser(String username, String email, String phoneNumber, String password, File file) async {
+  Future<bool> signUpUser(String username, String email, String phoneNumber, String password, File file, String deviceToken) async {
     String endPoint = kbaseUrl + '/user/signup';
 
     FormData formData = FormData.fromMap({
+      "deviceToken": deviceToken,
       "username": username.trim(),
       "email": email.trim(),
       "password": password.trim(),
@@ -112,13 +113,13 @@ class AuthController extends GetxController {
   }
 
   //signin
-  Future<bool> signInUser(String email, String password) async {
+  Future<bool> signInUser(String email, String password, String deviceToken) async {
     try {
       Get.to(() => const Loading(), transition: Transition.fade);
       final response = await http.post(
         Uri.parse(kbaseUrl + '/user/signin'),
         headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
-        body: jsonEncode(<String, String>{'email': email.trim(), 'password': password.trim()}),
+        body: jsonEncode(<String, String>{'email': email.trim(), 'password': password.trim(), 'deviceToken': deviceToken}),
       );
       if (response.statusCode == 200) {
         _currentUser = User.fromJson(response.body);

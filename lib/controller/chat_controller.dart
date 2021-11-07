@@ -4,13 +4,17 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 class ChatController extends GetxController {
+  String? _token;
+  String? get token => _token;
+
   ChatController() {
     _getToken();
     _setupNotificationListener();
   }
   _getToken() async {
-    String? token = await FirebaseMessaging.instance.getToken();
-    print("Token " + token.toString());
+    _token = await FirebaseMessaging.instance.getToken();
+    print("Token " + _token.toString());
+    print(_token!.length);
   }
 
   _setupNotificationListener() {

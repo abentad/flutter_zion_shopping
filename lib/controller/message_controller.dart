@@ -60,12 +60,65 @@ class MessageController extends GetxController {
     update();
   }
 
-  Future<bool> sendMessageToRoom(String message, String convId, String senderId, String senderName) async {
+  Future<bool> sendMessageToRoom(String message, String convId, String senderId, String senderName, String receiverId) async {
     try {
       bool result = await createAndSaveMessage(convId: convId, senderId: senderId, senderName: senderName, messageText: message);
       if (result) {
+        //find device token using receiverId
+        Map<String, dynamic> result = await findDeviceToken(receiverId);
+        if (result['result']) {
+          bool notificationResult = await sendNotificationUsingDeviceToken(result['deviceToken'], senderName, message);
+          if (notificationResult) {
+            print('sent notification to deviceId = ${result['deviceToken']}\nsenderName = $senderName\nmessage = $message');
+          } else {
+            print('couldn\'t send notification');
+          }
+        }
         _socket.emit('send-message-to-room', {"message": message, "roomName": convId});
         print('emmited message successfully');
+        return true;
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
+    return false;
+  }
+
+  Future<Map<String, dynamic>> findDeviceToken(String userId) async {
+    String? _token = await _storage.read(key: _tokenKey);
+    print("userId: " + userId);
+    Dio _dio = Dio(BaseOptions(
+      baseUrl: kbaseUrl,
+      connectTimeout: 20000,
+      receiveTimeout: 100000,
+      headers: {'x-access-token': _token},
+      responseType: ResponseType.json,
+    ));
+    try {
+      final response = await _dio.get('/user/getDeviceToken?userId=$userId');
+      if (response.statusCode == 200) {
+        return {"result": true, "deviceToken": response.data['deviceToken']};
+      }
+    } catch (e) {
+      print(e);
+      return {"result": false};
+    }
+    return {"result": false};
+  }
+
+  Future<bool> sendNotificationUsingDeviceToken(String deviceToken, String messageTitle, String messageBody) async {
+    String? _token = await _storage.read(key: _tokenKey);
+    Dio _dio = Dio(BaseOptions(
+      baseUrl: kbaseUrl,
+      connectTimeout: 20000,
+      receiveTimeout: 100000,
+      headers: {'x-access-token': _token},
+      responseType: ResponseType.json,
+    ));
+    try {
+      final response = await _dio.get('/user/sendNotification?deviceToken=$deviceToken&messageTitle=$messageTitle&messageBody=$messageBody');
+      if (response.statusCode == 200) {
         return true;
       }
     } catch (e) {
@@ -79,7 +132,6 @@ class MessageController extends GetxController {
 
   Future<bool> createAndSaveMessage({required String convId, required String senderId, required String senderName, required String messageText}) async {
     String? _token = await _storage.read(key: _tokenKey);
-    print('save message called');
     Dio _dio = Dio(BaseOptions(
       baseUrl: kbaseUrl,
       connectTimeout: 20000,
@@ -92,9 +144,7 @@ class MessageController extends GetxController {
         '/chat/message',
         data: {"conversationId": convId, "senderId": senderId, "senderName": senderName, "messageText": messageText, "timeSent": DateTime.now().toString()},
       );
-      print(response.statusCode);
       if (response.statusCode == 201) {
-        print('worked nice');
         _messages.add(Message.fromJson(response.data));
         update();
         return true;

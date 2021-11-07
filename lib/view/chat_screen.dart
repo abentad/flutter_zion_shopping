@@ -221,6 +221,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 Get.find<MessageController>().conversations[widget.selectedConversationIndex!].id.toString(),
                                 Get.find<AuthController>().currentUser!.userId.toString(),
                                 Get.find<AuthController>().currentUser!.username.toString(),
+                                widget.productsList[widget.selectedProductIndex].posterId,
                               );
                               if (result) {
                                 _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);
