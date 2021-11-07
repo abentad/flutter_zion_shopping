@@ -32,7 +32,13 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
 
     //TODO: use this to scroll to the end of the list view after loading messages
-    Timer(const Duration(milliseconds: 150), () => Get.find<MessageController>().messages.length > 5 ? _scrollController.jumpTo(_scrollController.position.maxScrollExtent) : null);
+    Timer(
+        const Duration(milliseconds: 150),
+        () => _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.bounceIn,
+            ));
   }
 
   @override
@@ -203,8 +209,25 @@ class _ChatScreenState extends State<ChatScreen> {
                       SizedBox(width: size.width * 0.02),
                       Expanded(
                         child: TextFormField(
-                          onEditingComplete: () {
-                            _messageController.clear();
+                          // autofocus: true,
+                          onTap: () {
+                            _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);
+                          },
+                          onEditingComplete: () async {
+                            if (_messageController.text.isNotEmpty) {
+                              bool result = await Get.find<MessageController>().sendMessageToRoom(
+                                _messageController.text,
+                                Get.find<MessageController>().conversations[widget.selectedConversationIndex!].id.toString(),
+                                Get.find<AuthController>().currentUser!.userId.toString(),
+                                Get.find<AuthController>().currentUser!.username.toString(),
+                              );
+                              _messageController.clear();
+                              if (result) {
+                                _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Something went wrong')));
+                              }
+                            }
                             _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);
                           },
                           textInputAction: TextInputAction.send,

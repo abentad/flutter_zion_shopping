@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
+import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/model/conversation.dart';
 import 'package:flutter_node_auth/model/message.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -14,6 +15,12 @@ class MessageController extends GetxController {
   //connection working
   late Socket _socket;
   Socket get socket => _socket;
+  //
+  final List<Conversation> _conversations = [];
+  List<Conversation> get conversations => _conversations;
+  //
+  final List<Message> _messages = [];
+  List<Message> get messages => _messages;
 
   MessageController() {
     connectToServer();
@@ -42,22 +49,10 @@ class MessageController extends GetxController {
     int convId = 1;
     int senderId = 1;
     int messageId = 1;
-    // String senderName = Get.find<UserController>().currentUser!.name;
-    // _messages.add(
-    //   Message(
-    //     conversationId: convId.toString(),
-    //     senderId: senderId.toString(),
-    //     senderName: senderName,
-    //     text: message,
-    //     timeSent: DateTime.now(),
-    //     id: messageId.toString(),
-    //     v: 0,
-    //   ),
-    // );
-    // Get.find<NotificationController>().createBasicNotificaton(
-    //   title: 'sender name place holer',
-    //   body: message,
-    // );
+    String senderName = Get.find<AuthController>().currentUser!.username.toString();
+    _messages.add(
+      Message(conversationId: convId, senderId: senderId, senderName: senderName, messageText: message, timeSent: DateTime.now(), id: messageId),
+    );
     convId = convId + 1;
     senderId = senderId + 1;
     messageId = messageId + 1;
@@ -65,44 +60,50 @@ class MessageController extends GetxController {
     update();
   }
 
-  void sendMessageToRoom(String message, String convId, String senderId, String senderName) async {
-    // try {
-    //   bool result = await createAndSaveMessage(convId: convId, senderId: senderId, senderName: senderName, text: message);
-    //   if (result) {
-    //     _socket.emit('send-message-to-room', {"message": message, "roomName": convId});
-    //     print('emmited message successfully');
-    //   }
-    // } catch (e) {
-    //   print(e);
-    // }
+  Future<bool> sendMessageToRoom(String message, String convId, String senderId, String senderName) async {
+    try {
+      bool result = await createAndSaveMessage(convId: convId, senderId: senderId, senderName: senderName, messageText: message);
+      if (result) {
+        _socket.emit('send-message-to-room', {"message": message, "roomName": convId});
+        print('emmited message successfully');
+        return true;
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
+    return false;
   }
 
-  //mongodb stuff
   //
 
-  // Future<bool> createAndSaveMessage({required String convId, required String senderId, required String senderName, required String text}) async {
-  //   print('save message called');
-  //   Dio _dio = Dio(BaseOptions(baseUrl: kbaseUrl, connectTimeout: 20000, receiveTimeout: 100000, responseType: ResponseType.json));
-  //   try {
-  //     final response = await _dio.post(
-  //       '/api/message',
-  //       data: {"conversationId": convId, "senderId": senderId, "senderName": senderName, "text": text, "timeSent": DateTime.now().toString()},
-  //     );
-  //     print(response.statusCode);
-  //     if (response.statusCode == 201) {
-  //       print('worked nice');
-  //       _oldMessages.add(Message.fromJson(response.data));
-  //       _messages.add(Message.fromJson(response.data));
-  //       update();
-  //       return true;
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  //   return false;
-  // }
-  final List<Conversation> _conversations = [];
-  List<Conversation> get conversations => _conversations;
+  Future<bool> createAndSaveMessage({required String convId, required String senderId, required String senderName, required String messageText}) async {
+    String? _token = await _storage.read(key: _tokenKey);
+    print('save message called');
+    Dio _dio = Dio(BaseOptions(
+      baseUrl: kbaseUrl,
+      connectTimeout: 20000,
+      receiveTimeout: 100000,
+      headers: {'x-access-token': _token},
+      responseType: ResponseType.json,
+    ));
+    try {
+      final response = await _dio.post(
+        '/chat/message',
+        data: {"conversationId": convId, "senderId": senderId, "senderName": senderName, "messageText": messageText, "timeSent": DateTime.now().toString()},
+      );
+      print(response.statusCode);
+      if (response.statusCode == 201) {
+        print('worked nice');
+        _messages.add(Message.fromJson(response.data));
+        update();
+        return true;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
 
   Future<bool> getConversations(String userId) async {
     String? _token = await _storage.read(key: _tokenKey);
@@ -131,9 +132,6 @@ class MessageController extends GetxController {
     return false;
   }
 
-  final List<Message> _messages = [];
-  List<Message> get messages => _messages;
-
   Future<bool> getMessages(String convId) async {
     String? _token = await _storage.read(key: _tokenKey);
     Dio _dio = Dio(BaseOptions(
@@ -159,11 +157,6 @@ class MessageController extends GetxController {
       return false;
     }
     return false;
-  }
-
-  void clearOldMessages() {
-    // _oldMessages.clear();
-    update();
   }
 
   void joinRoom(String roomName) {
