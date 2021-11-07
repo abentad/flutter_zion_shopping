@@ -61,17 +61,19 @@ class MessageController extends GetxController {
   }
 
   Future<bool> sendMessageToRoom(String message, String convId, String senderId, String senderName, String receiverId) async {
+    // print('send message called using:\nmessage: $message\nconvId: $convId\nsenderId: $senderId\nsenderName: $senderName\nreceiverId: $receiverId');
     try {
       bool result = await createAndSaveMessage(convId: convId, senderId: senderId, senderName: senderName, messageText: message);
       if (result) {
+        print('saved message to DB successfully');
         //find device token using receiverId
         Map<String, dynamic> result = await findDeviceToken(receiverId);
         if (result['result']) {
           bool notificationResult = await sendNotificationUsingDeviceToken(result['deviceToken'], senderName, message);
           if (notificationResult) {
-            print('sent notification to deviceId = ${result['deviceToken']}\nsenderName = $senderName\nmessage = $message');
+            print("notification sent successfully");
           } else {
-            print('couldn\'t send notification');
+            print("something went wrong");
           }
         }
         _socket.emit('send-message-to-room', {"message": message, "roomName": convId});
@@ -87,7 +89,6 @@ class MessageController extends GetxController {
 
   Future<Map<String, dynamic>> findDeviceToken(String userId) async {
     String? _token = await _storage.read(key: _tokenKey);
-    print("userId: " + userId);
     Dio _dio = Dio(BaseOptions(
       baseUrl: kbaseUrl,
       connectTimeout: 20000,
@@ -101,13 +102,16 @@ class MessageController extends GetxController {
         return {"result": true, "deviceToken": response.data['deviceToken']};
       }
     } catch (e) {
-      print(e);
+      // print(e);
+      print('failed finding device token');
       return {"result": false};
     }
+    print('failed finding device token');
     return {"result": false};
   }
 
   Future<bool> sendNotificationUsingDeviceToken(String deviceToken, String messageTitle, String messageBody) async {
+    // print('send notification called using:\ndeviceToken: $deviceToken\nmessageTitle: $messageTitle\nmessagebody: $messageBody');
     String? _token = await _storage.read(key: _tokenKey);
     Dio _dio = Dio(BaseOptions(
       baseUrl: kbaseUrl,
@@ -120,12 +124,13 @@ class MessageController extends GetxController {
       final response = await _dio.get('/user/sendNotification?deviceToken=$deviceToken&messageTitle=$messageTitle&messageBody=$messageBody');
       if (response.statusCode == 200) {
         return true;
+      } else {
+        return false;
       }
     } catch (e) {
       print(e);
       return false;
     }
-    return false;
   }
 
   //
