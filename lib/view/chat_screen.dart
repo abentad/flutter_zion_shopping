@@ -221,8 +221,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                 Get.find<MessageController>().conversations[widget.selectedConversationIndex!].id.toString(),
                                 Get.find<AuthController>().currentUser!.userId.toString(),
                                 Get.find<AuthController>().currentUser!.username.toString(),
+
                                 //fix this part its causing notification error
-                                widget.productsList[widget.selectedProductIndex].posterId,
+                                // widget.productsList[widget.selectedProductIndex].posterId,
+                                Get.find<AuthController>().currentUser!.userId.toString() == "24" ? "25" : "24",
                               );
                               if (result) {
                                 _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);

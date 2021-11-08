@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
@@ -45,6 +46,21 @@ class MessageController extends GetxController {
     print('connected to socket with id: ${_socket.id}');
   }
 
+  int createUniqueId() {
+    return DateTime.now().millisecond;
+  }
+
+  Future<void> createBasicNotificaton({required String title, required String body}) async {
+    await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+      id: createUniqueId(),
+      channelKey: 'basic_channel',
+      title: title,
+      body: body,
+      notificationLayout: NotificationLayout.Default,
+    ));
+  }
+
   void onReceiveMessage(message) {
     int convId = 1;
     int senderId = 1;
@@ -53,6 +69,7 @@ class MessageController extends GetxController {
     _messages.add(
       Message(conversationId: convId, senderId: senderId, senderName: senderName, messageText: message, timeSent: DateTime.now(), id: messageId),
     );
+    // createBasicNotificaton(title: "sender", body: message);
     convId = convId + 1;
     senderId = senderId + 1;
     messageId = messageId + 1;
