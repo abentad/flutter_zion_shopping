@@ -73,7 +73,7 @@ class MessageController extends GetxController {
           if (notificationResult) {
             print("notification sent successfully");
           } else {
-            print("something went wrong");
+            print("something went wrong while sending notification");
           }
         }
         _socket.emit('send-message-to-room', {"message": message, "roomName": convId});
@@ -111,7 +111,7 @@ class MessageController extends GetxController {
   }
 
   Future<bool> sendNotificationUsingDeviceToken(String deviceToken, String messageTitle, String messageBody) async {
-    // print('send notification called using:\ndeviceToken: $deviceToken\nmessageTitle: $messageTitle\nmessagebody: $messageBody');
+    print('send notification called using:\ndeviceToken: $deviceToken\nmessageTitle: $messageTitle\nmessagebody: $messageBody');
     String? _token = await _storage.read(key: _tokenKey);
     Dio _dio = Dio(BaseOptions(
       baseUrl: kbaseUrl,
