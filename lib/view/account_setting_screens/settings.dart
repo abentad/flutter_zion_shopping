@@ -4,7 +4,7 @@ import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/controller/message_controller.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
-import 'package:flutter_node_auth/view/messages_screen.dart';
+import 'package:flutter_node_auth/view/chat_screens/messages_screen.dart';
 import 'package:get/get.dart';
 
 class Settings extends StatelessWidget {

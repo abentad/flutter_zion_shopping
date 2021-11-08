@@ -4,10 +4,9 @@ import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/theme_controller.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
+import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
-
-import 'home_screen/home_screen_helpers.dart';
 
 class SellerScreen extends StatelessWidget {
   const SellerScreen({Key? key}) : super(key: key);

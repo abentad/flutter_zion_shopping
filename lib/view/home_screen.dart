@@ -6,11 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/product_controller.dart';
 import 'package:flutter_node_auth/controller/theme_controller.dart';
-import 'package:flutter_node_auth/view/components/home_components.dart';
-import 'package:flutter_node_auth/view/home_screen/home_screen_helpers.dart';
+import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:flutter_node_auth/view/product/product_add.dart';
 import 'package:flutter_node_auth/view/product/product_detail.dart';
-import 'package:flutter_node_auth/view/settings.dart';
+import 'package:flutter_node_auth/view/account_setting_screens/settings.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -61,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
             visible: _isVisible,
             child: FloatingActionButton(
               onPressed: () async {
+                // Get.to(() => const ProductAdd(), transition: Transition.cupertino);
                 Get.to(() => const ProductAdd(), transition: Transition.cupertino);
               },
               backgroundColor: controller.defaultTheme['addButton'],

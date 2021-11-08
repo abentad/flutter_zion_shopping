@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/controller/product_controller.dart';
-import 'package:flutter_node_auth/view/components/loading.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
