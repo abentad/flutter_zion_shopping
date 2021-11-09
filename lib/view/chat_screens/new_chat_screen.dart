@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
+import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/controller/message_controller.dart';
 import 'package:flutter_node_auth/model/product.dart';
@@ -13,17 +14,16 @@ import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key, required this.selectedProductIndex, this.selectedConversationIndex, required this.productsList}) : super(key: key);
+class NewChatScreen extends StatefulWidget {
+  const NewChatScreen({Key? key, required this.selectedProductIndex, required this.productsList}) : super(key: key);
   final int? selectedProductIndex;
   final List<Product>? productsList;
-  final int? selectedConversationIndex;
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  State<NewChatScreen> createState() => _NewChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _NewChatScreenState extends State<NewChatScreen> {
   final TextEditingController _messageController = TextEditingController();
 
   final _scrollController = ScrollController();
@@ -68,10 +68,14 @@ class _ChatScreenState extends State<ChatScreen> {
               backgroundColor: const Color(0xfff2f2f2),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(50.0),
+                // child: CachedNetworkImage(
+                //   imageUrl: Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderProfileUrl == Get.find<AuthController>().currentUser!.profile
+                //       ? kbaseUrl + "/" + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverProfileUrl
+                //       : kbaseUrl + "/" + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderProfileUrl,
+                //   fit: BoxFit.fill,
+                // ),
                 child: CachedNetworkImage(
-                  imageUrl: Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderProfileUrl == Get.find<AuthController>().currentUser!.profile
-                      ? kbaseUrl + "/" + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverProfileUrl
-                      : kbaseUrl + "/" + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderProfileUrl,
+                  imageUrl: widget.productsList![widget.selectedProductIndex!].posterProfileAvatar,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -80,9 +84,10 @@ class _ChatScreenState extends State<ChatScreen> {
             Column(
               children: [
                 Text(
-                    Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderName == Get.find<AuthController>().currentUser!.username
-                        ? Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverName.capitalize.toString()
-                        : Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderName.capitalize.toString(),
+                    // Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderName == Get.find<AuthController>().currentUser!.username
+                    //     ? Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverName.capitalize.toString()
+                    //     : Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderName.capitalize.toString(),
+                    widget.productsList![widget.selectedProductIndex!].posterName,
                     style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 18.0)),
               ],
             )
@@ -217,15 +222,33 @@ class _ChatScreenState extends State<ChatScreen> {
                           },
                           onEditingComplete: () async {
                             if (_messageController.text.isNotEmpty) {
-                              bool result = await Get.find<MessageController>().sendMessageToRoom(
-                                message: _messageController.text,
-                                convId: Get.find<MessageController>().conversations[widget.selectedConversationIndex!].id.toString(),
-                                senderId: Get.find<AuthController>().currentUser!.userId.toString(),
-                                senderName: Get.find<AuthController>().currentUser!.username.toString(),
-
-                                //fix this part its causing notification error
-                                // widget.productsList[widget.selectedProductIndex].posterId,
-                                receiverId: Get.find<AuthController>().currentUser!.userId.toString() == "24" ? "25" : "24",
+                              String senderId = Get.find<AuthController>().currentUser!.userId.toString();
+                              String receiverId = widget.productsList![widget.selectedProductIndex!].posterId;
+                              String senderName = Get.find<AuthController>().currentUser!.username.toString();
+                              String receiverName = widget.productsList![widget.selectedProductIndex!].posterName;
+                              String senderProfileUrl = Get.find<AuthController>().currentUser!.profile.toString();
+                              String receiverProfileUrl = widget.productsList![widget.selectedProductIndex!].posterProfileAvatar;
+                              String lastMessage = _messageController.text;
+                              // bool result = await Get.find<MessageController>().sendMessageToRoom(
+                              //   message: _messageController.text,
+                              //   // convId: Get.find<MessageController>().conversations[widget.selectedConversationIndex!].id.toString(),
+                              //   convId: "new",
+                              //   senderId: Get.find<AuthController>().currentUser!.userId.toString(),
+                              //   senderName: Get.find<AuthController>().currentUser!.username.toString(),
+                              //   //fix this part its causing notification error
+                              //   // widget.productsList[widget.selectedProductIndex].posterId,
+                              //   // Get.find<AuthController>().currentUser!.userId.toString() == "24" ? "25" : "24",
+                              //   receiverId: widget.productsList![widget.selectedProductIndex!].posterId,
+                              // );
+                              bool result = await Get.find<MessageController>().postNewMessage(
+                                senderId: senderId,
+                                receiverId: receiverId,
+                                senderName: senderName,
+                                receiverName: receiverName,
+                                senderProfileUrl: senderProfileUrl,
+                                receiverProfileUrl: receiverProfileUrl,
+                                lastMessage: lastMessage,
+                                lastMessageSenderId: senderId,
                               );
                               if (result) {
                                 _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);

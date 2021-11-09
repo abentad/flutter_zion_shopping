@@ -17,17 +17,24 @@ class MessageController extends GetxController {
   late Socket _socket;
   Socket get socket => _socket;
   //
-  final List<Conversation> _conversations = [];
+  List<Conversation> _conversations = [];
   List<Conversation> get conversations => _conversations;
   //
-  final List<Message> _messages = [];
+  List<Message> _messages = [];
   List<Message> get messages => _messages;
 
+  void clearData() {
+    _conversations = [];
+    _messages = [];
+    update();
+  }
+
+  //
   MessageController() {
     connectToServer();
   }
 
-  //
+  //connects the device to the socket io server
   void connectToServer() {
     try {
       _socket = io(kbaseUrl, <String, dynamic>{
@@ -42,14 +49,17 @@ class MessageController extends GetxController {
     }
   }
 
+  //prints the socket id when device connects to the socket
   void onConnect(_) {
     print('connected to socket with id: ${_socket.id}');
   }
 
+  //creates a unique set of integers so it can be used when creating notifications and other stuff that requires a unique id
   int createUniqueId() {
     return DateTime.now().millisecond;
   }
 
+  //creates a basic notification with title and body using awesome notification plugin
   Future<void> createBasicNotificaton({required String title, required String body}) async {
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
@@ -61,6 +71,7 @@ class MessageController extends GetxController {
     ));
   }
 
+  //adds new message received from socket io to the list of messages
   void onReceiveMessage(message) {
     int convId = 1;
     int senderId = 1;
@@ -77,20 +88,25 @@ class MessageController extends GetxController {
     update();
   }
 
-  Future<bool> sendMessageToRoom(String message, String convId, String senderId, String senderName, String receiverId) async {
+  //posts message, finds device token by using receiverId, sends notification using the device token, emits the message to the room with the convId
+  Future<bool> sendMessageToRoom({required String message, required String convId, required String senderId, required String senderName, required String receiverId}) async {
     // print('send message called using:\nmessage: $message\nconvId: $convId\nsenderId: $senderId\nsenderName: $senderName\nreceiverId: $receiverId');
     try {
-      bool result = await createAndSaveMessage(convId: convId, senderId: senderId, senderName: senderName, messageText: message);
+      bool result = await postMessage(convId: convId, senderId: senderId, senderName: senderName, messageText: message);
       if (result) {
         print('saved message to DB successfully');
         //find device token using receiverId
         Map<String, dynamic> result = await findDeviceToken(receiverId);
         if (result['result']) {
-          bool notificationResult = await sendNotificationUsingDeviceToken(result['deviceToken'], senderName, message);
-          if (notificationResult) {
-            print("notification sent successfully");
+          if (result['deviceToken'] != "") {
+            bool notificationResult = await sendNotificationUsingDeviceToken(result['deviceToken'], senderName, message);
+            if (notificationResult) {
+              print("notification sent successfully");
+            } else {
+              print("something went wrong while sending notification");
+            }
           } else {
-            print("something went wrong while sending notification");
+            print('device token empty not sending notification');
           }
         }
         _socket.emit('send-message-to-room', {"message": message, "roomName": convId});
@@ -104,6 +120,7 @@ class MessageController extends GetxController {
     return false;
   }
 
+  //for finding device token by using the users id
   Future<Map<String, dynamic>> findDeviceToken(String userId) async {
     String? _token = await _storage.read(key: _tokenKey);
     Dio _dio = Dio(BaseOptions(
@@ -117,9 +134,11 @@ class MessageController extends GetxController {
       final response = await _dio.get('/user/getDeviceToken?userId=$userId');
       if (response.statusCode == 200) {
         return {"result": true, "deviceToken": response.data['deviceToken']};
+      } else if (response.statusCode == 201) {
+        return {"result": true, "deviceToken": ""};
       }
     } catch (e) {
-      // print(e);
+      print(e);
       print('failed finding device token');
       return {"result": false};
     }
@@ -127,6 +146,7 @@ class MessageController extends GetxController {
     return {"result": false};
   }
 
+  //for sending notification by using device token
   Future<bool> sendNotificationUsingDeviceToken(String deviceToken, String messageTitle, String messageBody) async {
     print('send notification called using:\ndeviceToken: $deviceToken\nmessageTitle: $messageTitle\nmessagebody: $messageBody');
     String? _token = await _storage.read(key: _tokenKey);
@@ -150,9 +170,8 @@ class MessageController extends GetxController {
     }
   }
 
-  //
-
-  Future<bool> createAndSaveMessage({required String convId, required String senderId, required String senderName, required String messageText}) async {
+  //for posting new message
+  Future<bool> postMessage({required String convId, required String senderId, required String senderName, required String messageText}) async {
     String? _token = await _storage.read(key: _tokenKey);
     Dio _dio = Dio(BaseOptions(
       baseUrl: kbaseUrl,
@@ -177,6 +196,7 @@ class MessageController extends GetxController {
     return false;
   }
 
+  //for getting all conversations based on the user id
   Future<bool> getConversations(String userId) async {
     String? _token = await _storage.read(key: _tokenKey);
     Dio _dio = Dio(BaseOptions(
@@ -204,6 +224,86 @@ class MessageController extends GetxController {
     return false;
   }
 
+  Future<bool> postNewMessage({
+    required String senderId,
+    required String receiverId,
+    required String senderName,
+    required String receiverName,
+    required String senderProfileUrl,
+    required String receiverProfileUrl,
+    required String lastMessage,
+    required String lastMessageSenderId,
+  }) async {
+    Map<String, dynamic> res = await postConversation(
+      senderId: senderId.toString(),
+      receiverId: receiverId,
+      senderName: senderName,
+      receiverName: receiverName,
+      senderProfileUrl: senderProfileUrl,
+      receiverProfileUrl: receiverProfileUrl,
+      lastMessage: lastMessage,
+      lastMessageSenderId: lastMessageSenderId,
+    );
+    //if new conversation has been successfully created
+    if (res['result']) {
+      String convId = res['convId'];
+      // bool messagePostResult = await postMessage(convId: convId.toString(), senderId: senderId, senderName: senderName, messageText: lastMessage);
+      bool messageSendToRoomResult = await sendMessageToRoom(message: lastMessage, convId: convId, senderId: senderId, senderName: senderName, receiverId: receiverId);
+      if (messageSendToRoomResult) {
+        print('message sent successfully.');
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //posting new conversation
+  Future<Map<String, dynamic>> postConversation({
+    required String senderId,
+    required String receiverId,
+    required String senderName,
+    required String receiverName,
+    required String senderProfileUrl,
+    required String receiverProfileUrl,
+    required String lastMessage,
+    required String lastMessageSenderId,
+  }) async {
+    String? _token = await _storage.read(key: _tokenKey);
+    Dio _dio = Dio(BaseOptions(
+      baseUrl: kbaseUrl,
+      connectTimeout: 20000,
+      receiveTimeout: 100000,
+      headers: {'x-access-token': _token},
+      responseType: ResponseType.json,
+    ));
+    try {
+      final response = await _dio.post(
+        '/chat/conv',
+        data: {
+          "senderId": senderId,
+          "receiverId": receiverId,
+          "senderName": senderName,
+          "receiverName": receiverName,
+          "senderProfileUrl": senderProfileUrl,
+          "receiverProfileUrl": receiverProfileUrl,
+          "lastMessage": lastMessage,
+          "lastMessageTimeSent": DateTime.now().toString(),
+          "lastMessageSenderId": lastMessageSenderId,
+        },
+      );
+      if (response.statusCode == 201) {
+        print('conversation created id: ${response.data.toString()}');
+        update();
+        return {"result": true, "convId": response.data.toString()};
+      }
+    } catch (e) {
+      print(e);
+      return {"result": false};
+    }
+    return {"result": false};
+  }
+
+  //for getting messages based on conversation id
   Future<bool> getMessages(String convId) async {
     String? _token = await _storage.read(key: _tokenKey);
     joinRoom(convId);
@@ -233,6 +333,7 @@ class MessageController extends GetxController {
     return false;
   }
 
+  //for joining socket room
   void joinRoom(String roomName) {
     _socket.emit('join-room', roomName);
   }

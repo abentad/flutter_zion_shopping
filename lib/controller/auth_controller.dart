@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
+import 'package:flutter_node_auth/controller/message_controller.dart';
 import 'package:flutter_node_auth/model/user.dart';
 import 'package:flutter_node_auth/view/auth/auth_choice.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
@@ -157,10 +158,39 @@ class AuthController extends GetxController {
     return false;
   }
 
-  void signOut() async {
-    if (await _storage.read(key: _tokenKey) != null) {
-      await _storage.write(key: _tokenKey, value: null);
-      Get.offAll(() => const AuthChoice(), transition: Transition.cupertino);
+  Future<bool> signOut() async {
+    bool result = await removeDeviceToken(_currentUser!.userId.toString());
+    if (result) {
+      print('device token removed successfully');
+      if (await _storage.read(key: _tokenKey) != null) {
+        await _storage.write(key: _tokenKey, value: null);
+        Get.find<MessageController>().clearData();
+        Get.offAll(() => const AuthChoice(), transition: Transition.cupertino);
+        return true;
+      }
+      return false;
     }
+    return false;
+  }
+
+  Future<bool> removeDeviceToken(String userId) async {
+    String? _token = await _storage.read(key: _tokenKey);
+    Dio _dio = Dio(BaseOptions(
+      baseUrl: kbaseUrl,
+      connectTimeout: 20000,
+      receiveTimeout: 100000,
+      headers: {'x-access-token': _token},
+      responseType: ResponseType.json,
+    ));
+    try {
+      final response = await _dio.get('/user/signout?id=$userId');
+      if (response.statusCode == 200) {
+        return true;
+      }
+    } catch (e) {
+      print('failed removing device token');
+      return false;
+    }
+    return false;
   }
 }
