@@ -217,15 +217,18 @@ class _ChatScreenState extends State<ChatScreen> {
                           },
                           onEditingComplete: () async {
                             if (_messageController.text.isNotEmpty) {
+                              print("senderId: " + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderId.toString());
+                              print("receiverId: " + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverId.toString());
+
                               bool result = await Get.find<MessageController>().sendMessageToRoom(
                                 message: _messageController.text,
                                 convId: Get.find<MessageController>().conversations[widget.selectedConversationIndex!].id.toString(),
                                 senderId: Get.find<AuthController>().currentUser!.userId.toString(),
                                 senderName: Get.find<AuthController>().currentUser!.username.toString(),
-
-                                //fix this part its causing notification error
-                                // widget.productsList[widget.selectedProductIndex].posterId,
-                                receiverId: Get.find<AuthController>().currentUser!.userId.toString() == "24" ? "25" : "24",
+                                receiverId:
+                                    Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderId == Get.find<AuthController>().currentUser!.userId
+                                        ? Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverId.toString()
+                                        : Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderId.toString(),
                               );
                               if (result) {
                                 _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);

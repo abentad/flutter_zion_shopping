@@ -7,7 +7,6 @@ import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
-import 'package:flutter_node_auth/view/chat_screens/chat_screen.dart';
 import 'package:flutter_node_auth/view/chat_screens/new_chat_screen.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:flutter_node_auth/view/product/product_image_detail.dart';

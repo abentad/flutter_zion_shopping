@@ -7,7 +7,6 @@ import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/product_controller.dart';
 import 'package:flutter_node_auth/controller/theme_controller.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
-import 'package:flutter_node_auth/view/onboarding_screen.dart';
 import 'package:flutter_node_auth/view/product/product_add.dart';
 import 'package:flutter_node_auth/view/product/product_detail.dart';
 import 'package:flutter_node_auth/view/account_setting_screens/settings.dart';

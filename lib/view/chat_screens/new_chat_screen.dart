@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
-import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/controller/message_controller.dart';
 import 'package:flutter_node_auth/model/product.dart';

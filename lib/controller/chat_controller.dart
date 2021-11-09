@@ -23,7 +23,7 @@ class ChatController extends GetxController {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null && !kIsWeb) {
-        createBasicNotificaton(title: notification.title.toString(), body: notification.body.toString());
+        createBasicNotificaton(title: notification.title!.capitalize.toString(), body: notification.body.toString());
       }
       print(notification.hashCode);
       print(notification!.title);
@@ -36,7 +36,7 @@ class ChatController extends GetxController {
         content: NotificationContent(
       id: createUniqueId(),
       channelKey: 'basic_channel',
-      title: title,
+      title: title.capitalize,
       body: body,
       notificationLayout: NotificationLayout.Default,
     ));

@@ -65,7 +65,7 @@ class MessageController extends GetxController {
         content: NotificationContent(
       id: createUniqueId(),
       channelKey: 'basic_channel',
-      title: title,
+      title: title.capitalize,
       body: body,
       notificationLayout: NotificationLayout.Default,
     ));
@@ -132,6 +132,7 @@ class MessageController extends GetxController {
     ));
     try {
       final response = await _dio.get('/user/getDeviceToken?userId=$userId');
+      print('finding token for userid: $userId');
       if (response.statusCode == 200) {
         return {"result": true, "deviceToken": response.data['deviceToken']};
       } else if (response.statusCode == 201) {
@@ -158,7 +159,7 @@ class MessageController extends GetxController {
       responseType: ResponseType.json,
     ));
     try {
-      final response = await _dio.get('/user/sendNotification?deviceToken=$deviceToken&messageTitle=$messageTitle&messageBody=$messageBody');
+      final response = await _dio.get('/user/sendNotification?deviceToken=$deviceToken&messageTitle=${messageTitle.capitalize}&messageBody=$messageBody');
       if (response.statusCode == 200) {
         return true;
       } else {
