@@ -31,7 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-
+    loadMessages();
     // use this to scroll to the end of the list view after loading messages
     Timer(
       const Duration(milliseconds: 150),
@@ -41,6 +41,13 @@ class _ChatScreenState extends State<ChatScreen> {
         curve: Curves.bounceIn,
       ),
     );
+  }
+
+  void loadMessages() async {
+    bool msgresult = await Get.find<MessageController>().getMessages(widget.conversation.id.toString());
+    if (msgresult) {
+      print('messages loaded successfully');
+    }
   }
 
   @override
@@ -112,9 +119,13 @@ class _ChatScreenState extends State<ChatScreen> {
                             padding: const EdgeInsets.only(bottom: 10.0),
                             child: BubbleSpecialTwo(
                               text: controller.messages[index].messageText,
+                              textStyle: TextStyle(
+                                color: controller.messages[index].senderId == Get.find<AuthController>().currentUser!.userId ? Colors.white : Colors.black,
+                                fontWeight: controller.messages[index].senderId == Get.find<AuthController>().currentUser!.userId ? FontWeight.w600 : FontWeight.w400,
+                              ),
                               isSender: controller.messages[index].senderId == Get.find<AuthController>().currentUser!.userId ? true : false,
                               sent: controller.messages[index].senderId == Get.find<AuthController>().currentUser!.userId ? true : false,
-                              color: const Color(0xFFE8E8EE),
+                              color: controller.messages[index].senderId == Get.find<AuthController>().currentUser!.userId ? Colors.teal.shade400 : const Color(0xFFE8E8EE),
                             ),
                           ),
                         ),
@@ -168,8 +179,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                     children: [
                                       Text(widget.productsList![widget.selectedProductIndex!].name.capitalize.toString(),
                                           style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600)),
-                                      Text("Posted:  " + GetTimeAgo.parse(widget.productsList![widget.selectedProductIndex!].datePosted),
-                                          style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400)),
+                                      // Text("Posted:  " + GetTimeAgo.parse(widget.productsList![widget.selectedProductIndex!].datePosted),
+                                      //     style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400)),
                                     ],
                                   ),
                                   SizedBox(height: size.height * 0.005),

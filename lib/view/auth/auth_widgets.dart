@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class CustomTextFormField extends StatefulWidget {
-  CustomTextFormField({
+class CustomTextFormFieldAuth extends StatefulWidget {
+  CustomTextFormFieldAuth({
     Key? key,
     required this.controller,
     this.isObsecure = false,
@@ -23,10 +23,10 @@ class CustomTextFormField extends StatefulWidget {
   final Function(String) onchanged;
 
   @override
-  State<CustomTextFormField> createState() => _CustomTextFormFieldState();
+  State<CustomTextFormFieldAuth> createState() => _CustomTextFormFieldStateAuth();
 }
 
-class _CustomTextFormFieldState extends State<CustomTextFormField> {
+class _CustomTextFormFieldStateAuth extends State<CustomTextFormFieldAuth> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(

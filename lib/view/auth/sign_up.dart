@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/controller/notification_controller.dart';
 import 'package:flutter_node_auth/view/auth/auth_widgets.dart';
+import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:flutter_node_auth/view/home_screen.dart';
 import 'package:flutter_node_auth/view/auth/sign_in.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:get/get.dart';
 import 'package:get/instance_manager.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -49,13 +51,13 @@ class _SignUpState extends State<SignUp> {
                 SizedBox(height: size.height * 0.02),
                 const Padding(
                   padding: EdgeInsets.only(left: 20.0, right: 60.0),
-                  child:
-                      Text('Create an account so you can order your favorite food even faster', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400, color: Colors.grey)),
+                  child: Text('Create an account so you can find products faster from multiple providers.',
+                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400, color: Colors.grey)),
                 ),
                 SizedBox(height: size.height * 0.06),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: CustomTextFormField(
+                  child: CustomTextFormFieldAuth(
                     onchanged: (_) {},
                     controller: _usernameController,
                     keyboardType: TextInputType.name,
@@ -66,7 +68,7 @@ class _SignUpState extends State<SignUp> {
                 SizedBox(height: size.height * 0.02),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: CustomTextFormField(
+                  child: CustomTextFormFieldAuth(
                     onchanged: (_) {},
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -77,7 +79,7 @@ class _SignUpState extends State<SignUp> {
                 SizedBox(height: size.height * 0.02),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: CustomTextFormField(
+                  child: CustomTextFormFieldAuth(
                     onchanged: (_) {},
                     controller: _phoneNumberController,
                     keyboardType: TextInputType.phone,
@@ -88,7 +90,7 @@ class _SignUpState extends State<SignUp> {
                 SizedBox(height: size.height * 0.02),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: CustomTextFormField(
+                  child: CustomTextFormFieldAuth(
                     onchanged: (value) {
                       setState(() {
                         _isPassValidatorVisible = true;
@@ -130,18 +132,17 @@ class _SignUpState extends State<SignUp> {
                           _phoneNumberController.text.isNotEmpty &&
                           _isPassValid) {
                         if (EmailValidator.validate(_emailController.text.trim())) {
-                          File file = await Get.find<AuthController>().chooseImage(ImageSource.gallery);
-                          bool _result = await Get.find<AuthController>().signUpUser(
-                            _usernameController.text,
-                            _emailController.text,
-                            _phoneNumberController.text,
-                            _passwordController.text,
-                            file,
-                            Get.find<NotificationController>().token.toString(),
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => ProfileImgSelectScreen(
+                                username: _usernameController.text,
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                                phoneNumber: _phoneNumberController.text,
+                              ),
+                            ),
                           );
-                          if (_result) {
-                            Get.offAll(() => const HomeScreen(), transition: Transition.fade);
-                          }
                         }
                       }
                     },
@@ -187,6 +188,93 @@ class _SignUpState extends State<SignUp> {
                 SizedBox(height: size.height * 0.04),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileImgSelectScreen extends StatefulWidget {
+  const ProfileImgSelectScreen({Key? key, required this.username, required this.email, required this.password, required this.phoneNumber}) : super(key: key);
+  final String username, email, password, phoneNumber;
+
+  @override
+  State<ProfileImgSelectScreen> createState() => _ProfileImgSelectScreenState();
+}
+
+class _ProfileImgSelectScreenState extends State<ProfileImgSelectScreen> {
+  File? profileImgFile;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(),
+          child: Column(
+            children: [
+              SizedBox(height: size.height * 0.04),
+              GestureDetector(
+                onTap: () async {
+                  profileImgFile = await Get.find<AuthController>().chooseImage(ImageSource.gallery);
+                  setState(() {});
+                },
+                child: Stack(
+                  children: [
+                    Container(
+                      height: size.height * 0.35,
+                      width: size.width * 0.35,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        boxShadow: const [BoxShadow(color: Colors.grey, offset: Offset(2, 7), blurRadius: 10.0)],
+                        image: profileImgFile != null ? DecorationImage(image: FileImage(profileImgFile!), fit: BoxFit.contain) : null,
+                      ),
+                    ),
+                    Positioned(
+                      right: 10.0,
+                      bottom: 70.0,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [BoxShadow(color: Colors.grey, offset: Offset(2, 7), blurRadius: 10.0)],
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(MdiIcons.plus, color: Colors.teal, size: size.height * 0.05),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Text(
+                'Add Profile Image',
+                style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: size.height * 0.25),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: CustomMaterialButton(
+                  onPressed: () async {
+                    bool _result = await Get.find<AuthController>().signUpUser(
+                      widget.username,
+                      widget.email,
+                      widget.phoneNumber,
+                      widget.password,
+                      profileImgFile!,
+                      Get.find<NotificationController>().token.toString(),
+                    );
+                    if (_result) {
+                      Get.offAll(() => const HomeScreen(), transition: Transition.fade);
+                    }
+                  },
+                  btnLabel: "Continue",
+                ),
+              ),
+            ],
           ),
         ),
       ),
