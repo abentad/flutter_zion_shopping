@@ -316,7 +316,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(50.0),
                                     child: CachedNetworkImage(
-                                      imageUrl: widget.productsList[widget.selectedProductIndex].posterProfileAvatar.toString(),
+                                      imageUrl: kbaseUrl + "/" + widget.productsList[widget.selectedProductIndex].posterProfileAvatar.toString(),
                                       fit: BoxFit.fill,
                                     ),
                                   ),
@@ -364,53 +364,7 @@ class _ProductDetailState extends State<ProductDetail> {
                               SizedBox(width: size.width * 0.02),
                               Expanded(
                                 child: MaterialButton(
-                                  onPressed: () async {
-                                    //TODO: check if there is a conversation between this two people already
-                                    //TODO: if there is then get messages of that conversation and go to the chat screen
-                                    //TODO: if there is none then create new conversation and go to the chat screen
-                                    Map<String, dynamic> foundConv = await getter.Get.find<MessageController>().findConversation(
-                                      senderId: getter.Get.find<AuthController>().currentUser!.userId.toString(),
-                                      receiverId: widget.productsList[widget.selectedProductIndex].posterId,
-                                    );
-                                    print("found conv: " + foundConv.toString());
-                                    if (foundConv['result'] == false) {
-                                      print("creating new conversation...");
-                                      Map<String, dynamic> convCreated = await getter.Get.find<MessageController>().postConversation(
-                                        senderId: getter.Get.find<AuthController>().currentUser!.userId.toString(),
-                                        receiverId: widget.productsList[widget.selectedProductIndex].posterId,
-                                        senderName: getter.Get.find<AuthController>().currentUser!.username.toString(),
-                                        receiverName: widget.productsList[widget.selectedProductIndex].posterName,
-                                        senderProfileUrl: getter.Get.find<AuthController>().currentUser!.profile.toString(),
-                                        receiverProfileUrl: widget.productsList[widget.selectedProductIndex].posterProfileAvatar,
-                                        lastMessage: "",
-                                        lastMessageSenderId: "",
-                                      );
-                                      print("conv create: " + convCreated['result'].toString());
-                                      if (convCreated['result']) {
-                                        Navigator.push(
-                                          context,
-                                          CupertinoPageRoute(
-                                            builder: (context) => ChatScreen(
-                                              selectedProductIndex: widget.selectedProductIndex,
-                                              productsList: widget.productsList,
-                                              conversation: foundConv['conv'],
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    } else {
-                                      Navigator.push(
-                                        context,
-                                        CupertinoPageRoute(
-                                          builder: (context) => ChatScreen(
-                                            selectedProductIndex: widget.selectedProductIndex,
-                                            productsList: widget.productsList,
-                                            conversation: foundConv['conv'],
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  },
+                                  onPressed: messageBtn,
                                   color: Colors.teal,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                                   height: 50.0,
@@ -445,5 +399,53 @@ class _ProductDetailState extends State<ProductDetail> {
         ),
       ),
     );
+  }
+
+  void messageBtn() async {
+    //TODO: after getting into the chatscreen load messages from the conversationId on initstate
+    //TODO: everytime you load messages clear old messages that were there before them
+
+    Map<String, dynamic> foundConv = await getter.Get.find<MessageController>().findConversation(
+      senderId: getter.Get.find<AuthController>().currentUser!.userId.toString(),
+      receiverId: widget.productsList[widget.selectedProductIndex].posterId,
+    );
+    print("found conv: " + foundConv.toString());
+    if (foundConv['result'] == false) {
+      print("creating new conversation...");
+      Map<String, dynamic> convCreated = await getter.Get.find<MessageController>().postConversation(
+        senderId: getter.Get.find<AuthController>().currentUser!.userId.toString(),
+        receiverId: widget.productsList[widget.selectedProductIndex].posterId,
+        senderName: getter.Get.find<AuthController>().currentUser!.username.toString(),
+        receiverName: widget.productsList[widget.selectedProductIndex].posterName,
+        senderProfileUrl: getter.Get.find<AuthController>().currentUser!.profile.toString(),
+        receiverProfileUrl: widget.productsList[widget.selectedProductIndex].posterProfileAvatar,
+        lastMessage: "",
+        lastMessageSenderId: "",
+      );
+      print("conv create: " + convCreated['result'].toString());
+      if (convCreated['result']) {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => ChatScreen(
+              selectedProductIndex: widget.selectedProductIndex,
+              productsList: widget.productsList,
+              conversation: convCreated['conv'],
+            ),
+          ),
+        );
+      }
+    } else {
+      Navigator.push(
+        context,
+        CupertinoPageRoute(
+          builder: (context) => ChatScreen(
+            selectedProductIndex: widget.selectedProductIndex,
+            productsList: widget.productsList,
+            conversation: foundConv['conv'],
+          ),
+        ),
+      );
+    }
   }
 }

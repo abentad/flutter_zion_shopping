@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/controller/message_controller.dart';
-import 'package:flutter_node_auth/model/conversation.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
-import 'package:flutter_node_auth/view/chat_screens/chat_screen.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:get/get.dart';
 

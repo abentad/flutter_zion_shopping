@@ -170,7 +170,7 @@ class ApiController extends GetxController {
           "posterId": posterId,
           "posterName": posterName,
           "posterPhoneNumber": posterPhoneNumber,
-          "posterProfileAvatar": kbaseUrl + "/" + posterProfileAvatar,
+          "posterProfileAvatar": posterProfileAvatar,
           "isPending": isPendingString,
           "name": name,
           "views": 0,

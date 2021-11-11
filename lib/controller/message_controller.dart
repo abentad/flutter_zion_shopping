@@ -94,14 +94,20 @@ class MessageController extends GetxController {
     try {
       bool result = await postMessage(convId: convId, senderId: senderId, senderName: senderName, messageText: message);
       if (result) {
-        print('saved message to DB successfully');
+        print('***saved message to DB successfully');
+        bool updateConvResult = await updateConversationInfo(convId, message, senderId);
+        if (updateConvResult) {
+          print('***conversation info updated successfully');
+        } else {
+          print('failed updating conversation info');
+        }
         //find device token using receiverId
         Map<String, dynamic> result = await findDeviceToken(receiverId);
         if (result['result']) {
           if (result['deviceToken'] != "") {
             bool notificationResult = await sendNotificationUsingDeviceToken(result['deviceToken'], senderName, message);
             if (notificationResult) {
-              print("notification sent successfully");
+              print("***notification sent successfully");
             } else {
               print("something went wrong while sending notification");
             }
@@ -110,7 +116,36 @@ class MessageController extends GetxController {
           }
         }
         _socket.emit('send-message-to-room', {"message": message, "roomName": convId});
-        print('emmited message successfully');
+        print('***emmited message successfully');
+        return true;
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
+    return false;
+  }
+
+  //update conversation info
+  Future<bool> updateConversationInfo(String convId, String lastMessage, String lastMessageSenderId) async {
+    // String? _token = await _storage.read(key: _tokenKey);
+    Dio _dio = Dio(BaseOptions(
+      baseUrl: kbaseUrl,
+      connectTimeout: 20000,
+      receiveTimeout: 100000,
+      responseType: ResponseType.json,
+    ));
+    try {
+      final response = await _dio.put(
+        '/chat/conv/updlmsg',
+        data: {
+          "convId": convId,
+          "lastMessage": lastMessage,
+          "lastMessageSenderId": lastMessageSenderId,
+          "lastMessageTimeSent": DateTime.now().toString(),
+        },
+      );
+      if (response.statusCode == 200) {
         return true;
       }
     } catch (e) {
@@ -132,7 +167,7 @@ class MessageController extends GetxController {
     ));
     try {
       final response = await _dio.get('/user/getDeviceToken?userId=$userId');
-      print('finding token for userid: $userId');
+      // print('finding token for userid: $userId');
       if (response.statusCode == 200) {
         return {"result": true, "deviceToken": response.data['deviceToken']};
       } else if (response.statusCode == 201) {
@@ -249,39 +284,6 @@ class MessageController extends GetxController {
     return {"result": false};
   }
 
-  Future<bool> postNewMessage({
-    required String senderId,
-    required String receiverId,
-    required String senderName,
-    required String receiverName,
-    required String senderProfileUrl,
-    required String receiverProfileUrl,
-    required String lastMessage,
-    required String lastMessageSenderId,
-  }) async {
-    Map<String, dynamic> res = await postConversation(
-      senderId: senderId.toString(),
-      receiverId: receiverId,
-      senderName: senderName,
-      receiverName: receiverName,
-      senderProfileUrl: senderProfileUrl,
-      receiverProfileUrl: receiverProfileUrl,
-      lastMessage: lastMessage,
-      lastMessageSenderId: lastMessageSenderId,
-    );
-    //if new conversation has been successfully created
-    if (res['result']) {
-      String convId = res['convId'];
-      // bool messagePostResult = await postMessage(convId: convId.toString(), senderId: senderId, senderName: senderName, messageText: lastMessage);
-      bool messageSendToRoomResult = await sendMessageToRoom(message: lastMessage, convId: convId, senderId: senderId, senderName: senderName, receiverId: receiverId);
-      if (messageSendToRoomResult) {
-        print('message sent successfully.');
-        return true;
-      }
-    }
-    return false;
-  }
-
   //posting new conversation
   Future<Map<String, dynamic>> postConversation({
     required String senderId,
@@ -316,10 +318,8 @@ class MessageController extends GetxController {
           "lastMessageSenderId": lastMessageSenderId,
         },
       );
-      if (response.statusCode == 201) {
-        print('conversation created id: ${response.data.toString()}');
-        update();
-        return {"result": true, "convId": response.data.toString()};
+      if (response.statusCode == 200) {
+        return {"result": true, "conv": Conversation.fromJson(response.data)};
       }
     } catch (e) {
       print(e);

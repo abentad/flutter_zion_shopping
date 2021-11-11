@@ -32,7 +32,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
 
-    //TODO: use this to scroll to the end of the list view after loading messages
+    // use this to scroll to the end of the list view after loading messages
     Timer(
       const Duration(milliseconds: 150),
       () => _scrollController.animateTo(
@@ -71,8 +71,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 borderRadius: BorderRadius.circular(50.0),
                 child: CachedNetworkImage(
                   imageUrl: widget.conversation.senderProfileUrl == Get.find<AuthController>().currentUser!.profile
-                      ? widget.conversation.receiverProfileUrl
-                      : widget.conversation.senderProfileUrl,
+                      ? kbaseUrl + "/" + widget.conversation.receiverProfileUrl
+                      : kbaseUrl + "/" + widget.conversation.senderProfileUrl,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -218,25 +218,25 @@ class _ChatScreenState extends State<ChatScreen> {
                           },
                           onEditingComplete: () async {
                             if (_messageController.text.isNotEmpty) {
-                              // print("senderId: " + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderId.toString());
-                              // print("receiverId: " + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverId.toString());
+                              Get.find<AuthController>().currentUser!.userId == widget.conversation.senderId
+                                  ? print("senderId: " + widget.conversation.senderId.toString() + "\nreceiverId: " + widget.conversation.receiverId.toString())
+                                  : print("senderId: " + widget.conversation.receiverId.toString() + "\nreceiverId: " + widget.conversation.senderId.toString());
 
-                              // bool result = await Get.find<MessageController>().sendMessageToRoom(
-                              //   message: _messageController.text,
-                              //   convId: Get.find<MessageController>().conversations[widget.selectedConversationIndex!].id.toString(),
-                              //   senderId: Get.find<AuthController>().currentUser!.userId.toString(),
-                              //   senderName: Get.find<AuthController>().currentUser!.username.toString(),
-                              //   receiverId:
-                              //       Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderId == Get.find<AuthController>().currentUser!.userId
-                              //           ? Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverId.toString()
-                              //           : Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderId.toString(),
-                              // );
-                              // if (result) {
-                              //   _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);
-                              //   _messageController.clear();
-                              // } else {
-                              //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Something went wrong')));
-                              // }
+                              bool result = await Get.find<MessageController>().sendMessageToRoom(
+                                message: _messageController.text,
+                                convId: widget.conversation.id.toString(),
+                                senderId: Get.find<AuthController>().currentUser!.userId.toString(),
+                                senderName: Get.find<AuthController>().currentUser!.username.toString(),
+                                receiverId: widget.conversation.senderId == Get.find<AuthController>().currentUser!.userId
+                                    ? widget.conversation.receiverId.toString()
+                                    : widget.conversation.senderId.toString(),
+                              );
+                              if (result) {
+                                _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);
+                                _messageController.clear();
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Something went wrong')));
+                              }
                             }
                           },
                           textInputAction: TextInputAction.send,
