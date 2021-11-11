@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
+import 'package:flutter_node_auth/controller/auth_controller.dart';
+import 'package:flutter_node_auth/controller/message_controller.dart';
 import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
-import 'package:flutter_node_auth/view/chat_screens/new_chat_screen.dart';
+import 'package:flutter_node_auth/view/chat_screens/chat_screen.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:flutter_node_auth/view/product/product_image_detail.dart';
 import 'package:flutter_node_auth/view/seller_screen/seller_screen.dart';
@@ -342,50 +344,99 @@ class _ProductDetailState extends State<ProductDetail> {
                       height: size.height * 0.02,
                       decoration: const BoxDecoration(color: Colors.white),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SizedBox(width: size.width * 0.02),
-                        MaterialButton(
-                          onPressed: () {
-                            callNumber(widget.productsList[widget.selectedProductIndex].posterPhoneNumber.toString());
-                          },
-                          color: Colors.white,
-                          splashColor: Colors.grey.shade200,
-                          elevation: 0.0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0), side: const BorderSide(color: Colors.teal, width: 1.0)),
-                          height: 50.0,
-                          child: const Icon(Icons.phone, color: Colors.black),
-                        ),
-                        SizedBox(width: size.width * 0.02),
-                        Expanded(
-                          child: MaterialButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  // builder: (context) => ChatScreen(
-                                  //   selectedProductIndex: widget.selectedProductIndex,
-                                  //   productsList: widget.productsList,
-                                  //   // selectedConversationIndex: 0,
-                                  // ),
-                                  builder: (context) => NewChatScreen(
-                                    selectedProductIndex: widget.selectedProductIndex,
-                                    productsList: widget.productsList,
-                                  ),
+
+                    getter.Get.find<AuthController>().currentUser!.userId.toString() != widget.productsList[widget.selectedProductIndex].posterId
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              SizedBox(width: size.width * 0.02),
+                              MaterialButton(
+                                onPressed: () {
+                                  callNumber(widget.productsList[widget.selectedProductIndex].posterPhoneNumber.toString());
+                                },
+                                color: Colors.white,
+                                splashColor: Colors.grey.shade200,
+                                elevation: 0.0,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0), side: const BorderSide(color: Colors.teal, width: 1.0)),
+                                height: 50.0,
+                                child: const Icon(Icons.phone, color: Colors.black),
+                              ),
+                              SizedBox(width: size.width * 0.02),
+                              Expanded(
+                                child: MaterialButton(
+                                  onPressed: () async {
+                                    //TODO: check if there is a conversation between this two people already
+                                    //TODO: if there is then get messages of that conversation and go to the chat screen
+                                    //TODO: if there is none then create new conversation and go to the chat screen
+                                    Map<String, dynamic> foundConv = await getter.Get.find<MessageController>().findConversation(
+                                      senderId: getter.Get.find<AuthController>().currentUser!.userId.toString(),
+                                      receiverId: widget.productsList[widget.selectedProductIndex].posterId,
+                                    );
+                                    print("found conv: " + foundConv.toString());
+                                    if (foundConv['result'] == false) {
+                                      print("creating new conversation...");
+                                      Map<String, dynamic> convCreated = await getter.Get.find<MessageController>().postConversation(
+                                        senderId: getter.Get.find<AuthController>().currentUser!.userId.toString(),
+                                        receiverId: widget.productsList[widget.selectedProductIndex].posterId,
+                                        senderName: getter.Get.find<AuthController>().currentUser!.username.toString(),
+                                        receiverName: widget.productsList[widget.selectedProductIndex].posterName,
+                                        senderProfileUrl: getter.Get.find<AuthController>().currentUser!.profile.toString(),
+                                        receiverProfileUrl: widget.productsList[widget.selectedProductIndex].posterProfileAvatar,
+                                        lastMessage: "",
+                                        lastMessageSenderId: "",
+                                      );
+                                      print("conv create: " + convCreated['result'].toString());
+                                      if (convCreated['result']) {
+                                        Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                            builder: (context) => ChatScreen(
+                                              selectedProductIndex: widget.selectedProductIndex,
+                                              productsList: widget.productsList,
+                                              conversation: foundConv['conv'],
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    } else {
+                                      Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                          builder: (context) => ChatScreen(
+                                            selectedProductIndex: widget.selectedProductIndex,
+                                            productsList: widget.productsList,
+                                            conversation: foundConv['conv'],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  color: Colors.teal,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                  height: 50.0,
+                                  child: Text('Message ${widget.productsList[widget.selectedProductIndex].posterName.capitalize.toString()}',
+                                      style: const TextStyle(color: Colors.white)),
                                 ),
-                              );
-                            },
-                            color: Colors.teal,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                            height: 50.0,
-                            child:
-                                Text('Message ${widget.productsList[widget.selectedProductIndex].posterName.capitalize.toString()}', style: const TextStyle(color: Colors.white)),
+                              ),
+                              SizedBox(width: size.width * 0.02),
+                            ],
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              SizedBox(width: size.width * 0.02),
+                              Expanded(
+                                child: MaterialButton(
+                                  onPressed: () {},
+                                  color: Colors.orange,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                  height: 50.0,
+                                  child: const Text('Set Sold', style: TextStyle(color: Colors.white)),
+                                ),
+                              ),
+                              SizedBox(width: size.width * 0.02),
+                            ],
                           ),
-                        ),
-                        SizedBox(width: size.width * 0.02),
-                      ],
-                    ),
                   ],
                 ),
               )

@@ -3,11 +3,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
-class ChatController extends GetxController {
+class NotificationController extends GetxController {
   String? _token;
   String? get token => _token;
 
-  ChatController() {
+  NotificationController() {
     _getToken();
     _setupNotificationListener();
   }

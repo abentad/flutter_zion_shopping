@@ -225,6 +225,30 @@ class MessageController extends GetxController {
     return false;
   }
 
+  //for getting all conversations based on the user id
+  Future<Map<String, dynamic>> findConversation({required String senderId, required String receiverId}) async {
+    String? _token = await _storage.read(key: _tokenKey);
+    Dio _dio = Dio(BaseOptions(
+      baseUrl: kbaseUrl,
+      connectTimeout: 10000,
+      receiveTimeout: 100000,
+      // will not throw errors
+      validateStatus: (status) => true,
+      headers: {'x-access-token': _token},
+      responseType: ResponseType.json,
+    ));
+    try {
+      final response = await _dio.get('/chat/conv/check?sId=$senderId&rId=$receiverId');
+      if (response.statusCode == 200) {
+        return {"result": true, "conv": Conversation.fromJson(response.data)};
+      }
+    } catch (e) {
+      print(e);
+      return {"result": false};
+    }
+    return {"result": false};
+  }
+
   Future<bool> postNewMessage({
     required String senderId,
     required String receiverId,

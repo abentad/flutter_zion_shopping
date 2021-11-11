@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/controller/message_controller.dart';
+import 'package:flutter_node_auth/model/conversation.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
 import 'package:flutter_node_auth/view/chat_screens/chat_screen.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
@@ -53,15 +54,15 @@ class MessagesScreen extends StatelessWidget {
                         ontap: () async {
                           bool result = await controller.getMessages(controller.conversations[index].id.toString());
                           if (result) {
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => ChatScreen(
-                                    selectedProductIndex: 0,
-                                    productsList: Get.find<ApiController>().products,
-                                    selectedConversationIndex: index,
-                                  ),
-                                ));
+                            // Navigator.push(
+                            //     context,
+                            //     CupertinoPageRoute(
+                            //       builder: (context) => ChatScreen(
+                            //         selectedProductIndex: 0,
+                            //         productsList: Get.find<ApiController>().products,
+                            //         // selectedConversationIndex: index,
+                            //       ),
+                            //     ));
                           }
                         },
                         username: Get.find<AuthController>().currentUser!.username == controller.conversations[index].senderName

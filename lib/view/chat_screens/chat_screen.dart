@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
 import 'package:flutter_node_auth/controller/message_controller.dart';
+import 'package:flutter_node_auth/model/conversation.dart';
 import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
 import 'package:get/get.dart';
@@ -14,10 +15,10 @@ import 'package:get_time_ago/get_time_ago.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key, required this.selectedProductIndex, this.selectedConversationIndex, required this.productsList}) : super(key: key);
+  const ChatScreen({Key? key, required this.selectedProductIndex, required this.conversation, required this.productsList}) : super(key: key);
   final int? selectedProductIndex;
   final List<Product>? productsList;
-  final int? selectedConversationIndex;
+  final Conversation conversation;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -69,9 +70,9 @@ class _ChatScreenState extends State<ChatScreen> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(50.0),
                 child: CachedNetworkImage(
-                  imageUrl: Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderProfileUrl == Get.find<AuthController>().currentUser!.profile
-                      ? kbaseUrl + "/" + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverProfileUrl
-                      : kbaseUrl + "/" + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderProfileUrl,
+                  imageUrl: widget.conversation.senderProfileUrl == Get.find<AuthController>().currentUser!.profile
+                      ? widget.conversation.receiverProfileUrl
+                      : widget.conversation.senderProfileUrl,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -80,9 +81,9 @@ class _ChatScreenState extends State<ChatScreen> {
             Column(
               children: [
                 Text(
-                    Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderName == Get.find<AuthController>().currentUser!.username
-                        ? Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverName.capitalize.toString()
-                        : Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderName.capitalize.toString(),
+                    widget.conversation.senderName == Get.find<AuthController>().currentUser!.username
+                        ? widget.conversation.receiverName.capitalize.toString()
+                        : widget.conversation.senderName.capitalize.toString(),
                     style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 18.0)),
               ],
             )
@@ -217,25 +218,25 @@ class _ChatScreenState extends State<ChatScreen> {
                           },
                           onEditingComplete: () async {
                             if (_messageController.text.isNotEmpty) {
-                              print("senderId: " + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderId.toString());
-                              print("receiverId: " + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverId.toString());
+                              // print("senderId: " + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderId.toString());
+                              // print("receiverId: " + Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverId.toString());
 
-                              bool result = await Get.find<MessageController>().sendMessageToRoom(
-                                message: _messageController.text,
-                                convId: Get.find<MessageController>().conversations[widget.selectedConversationIndex!].id.toString(),
-                                senderId: Get.find<AuthController>().currentUser!.userId.toString(),
-                                senderName: Get.find<AuthController>().currentUser!.username.toString(),
-                                receiverId:
-                                    Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderId == Get.find<AuthController>().currentUser!.userId
-                                        ? Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverId.toString()
-                                        : Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderId.toString(),
-                              );
-                              if (result) {
-                                _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);
-                                _messageController.clear();
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Something went wrong')));
-                              }
+                              // bool result = await Get.find<MessageController>().sendMessageToRoom(
+                              //   message: _messageController.text,
+                              //   convId: Get.find<MessageController>().conversations[widget.selectedConversationIndex!].id.toString(),
+                              //   senderId: Get.find<AuthController>().currentUser!.userId.toString(),
+                              //   senderName: Get.find<AuthController>().currentUser!.username.toString(),
+                              //   receiverId:
+                              //       Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderId == Get.find<AuthController>().currentUser!.userId
+                              //           ? Get.find<MessageController>().conversations[widget.selectedConversationIndex!].receiverId.toString()
+                              //           : Get.find<MessageController>().conversations[widget.selectedConversationIndex!].senderId.toString(),
+                              // );
+                              // if (result) {
+                              //   _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 100), curve: Curves.bounceIn);
+                              //   _messageController.clear();
+                              // } else {
+                              //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Something went wrong')));
+                              // }
                             }
                           },
                           textInputAction: TextInputAction.send,

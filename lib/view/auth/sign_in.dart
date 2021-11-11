@@ -2,7 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
-import 'package:flutter_node_auth/controller/chat_controller.dart';
+import 'package:flutter_node_auth/controller/notification_controller.dart';
 import 'package:flutter_node_auth/view/home_screen.dart';
 import 'package:get/get.dart';
 
@@ -100,7 +100,7 @@ class SignIn extends StatelessWidget {
                           bool _result = await Get.find<AuthController>().signInUser(
                             _emailController.text,
                             _passwordController.text,
-                            Get.find<ChatController>().token.toString(),
+                            Get.find<NotificationController>().token.toString(),
                           );
                           if (_result) {
                             Get.offAll(() => const HomeScreen(), transition: Transition.fade);

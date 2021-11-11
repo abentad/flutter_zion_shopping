@@ -3,7 +3,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
-import 'package:flutter_node_auth/controller/chat_controller.dart';
+import 'package:flutter_node_auth/controller/notification_controller.dart';
 import 'package:flutter_node_auth/view/auth/auth_widgets.dart';
 import 'package:flutter_node_auth/view/home_screen.dart';
 import 'package:flutter_node_auth/view/auth/sign_in.dart';
@@ -137,7 +137,7 @@ class _SignUpState extends State<SignUp> {
                             _phoneNumberController.text,
                             _passwordController.text,
                             file,
-                            Get.find<ChatController>().token.toString(),
+                            Get.find<NotificationController>().token.toString(),
                           );
                           if (_result) {
                             Get.offAll(() => const HomeScreen(), transition: Transition.fade);
