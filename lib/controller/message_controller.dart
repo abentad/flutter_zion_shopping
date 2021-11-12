@@ -92,29 +92,10 @@ class MessageController extends GetxController {
   Future<bool> sendMessageToRoom({required String message, required String convId, required String senderId, required String senderName, required String receiverId}) async {
     // print('send message called using:\nmessage: $message\nconvId: $convId\nsenderId: $senderId\nsenderName: $senderName\nreceiverId: $receiverId');
     try {
-      bool result = await postMessage(convId: convId, senderId: senderId, senderName: senderName, messageText: message);
+      bool result = await postMessage(convId: convId, senderId: senderId, receiverId: receiverId, senderName: senderName, messageText: message);
       if (result) {
         print('***saved message to DB successfully');
-        bool updateConvResult = await updateConversationInfo(convId, message, senderId);
-        if (updateConvResult) {
-          print('***conversation info updated successfully');
-        } else {
-          print('failed updating conversation info');
-        }
-        //find device token using receiverId
-        Map<String, dynamic> result = await findDeviceToken(receiverId);
-        if (result['result']) {
-          if (result['deviceToken'] != "") {
-            bool notificationResult = await sendNotificationUsingDeviceToken(result['deviceToken'], senderName, message);
-            if (notificationResult) {
-              print("***notification sent successfully");
-            } else {
-              print("something went wrong while sending notification");
-            }
-          } else {
-            print('device token empty not sending notification');
-          }
-        }
+        print('***updated conversation info successfully');
         _socket.emit('send-message-to-room', {"message": message, "roomName": convId});
         print('***emmited message successfully');
         return true;
@@ -122,6 +103,49 @@ class MessageController extends GetxController {
     } catch (e) {
       print(e);
       return false;
+    }
+    return false;
+  }
+
+  //for posting new message
+  Future<bool> postMessage({required String convId, required String senderId, required String senderName, required String messageText, required String receiverId}) async {
+    String? _token = await _storage.read(key: _tokenKey);
+    Dio _dio = Dio(BaseOptions(
+      baseUrl: kbaseUrl,
+      connectTimeout: 20000,
+      receiveTimeout: 100000,
+      headers: {'x-access-token': _token},
+      responseType: ResponseType.json,
+    ));
+    try {
+      final response = await _dio.post(
+        '/chat/message',
+        data: {
+          "conversationId": convId,
+          "senderId": senderId,
+          "receiverId": receiverId,
+          "senderName": senderName,
+          "messageText": messageText,
+          "timeSent": DateTime.now().toString()
+        },
+      );
+      if (response.statusCode == 201) {
+        _messages.add(Message.fromJson(response.data['msg']));
+        if (response.data['dvt'] != "none") {
+          bool notificationResult = await sendNotificationUsingDeviceToken(response.data['dvt'], senderName, messageText);
+          if (notificationResult) {
+            print("***notification sent successfully");
+          } else {
+            print("something went wrong while sending notification");
+          }
+        } else {
+          print('device token empty not sending notification');
+        }
+        update();
+        return true;
+      }
+    } catch (e) {
+      print(e);
     }
     return false;
   }
@@ -166,7 +190,7 @@ class MessageController extends GetxController {
       responseType: ResponseType.json,
     ));
     try {
-      final response = await _dio.get('/user/getDeviceToken?userId=$userId');
+      final response = await _dio.get('/chat/getDeviceToken?userId=$userId');
       // print('finding token for userid: $userId');
       if (response.statusCode == 200) {
         return {"result": true, "deviceToken": response.data['deviceToken']};
@@ -184,7 +208,7 @@ class MessageController extends GetxController {
 
   //for sending notification by using device token
   Future<bool> sendNotificationUsingDeviceToken(String deviceToken, String messageTitle, String messageBody) async {
-    print('send notification called using:\ndeviceToken: $deviceToken\nmessageTitle: $messageTitle\nmessagebody: $messageBody');
+    // print('send notification called using:\ndeviceToken: $deviceToken\nmessageTitle: $messageTitle\nmessagebody: $messageBody');
     String? _token = await _storage.read(key: _tokenKey);
     Dio _dio = Dio(BaseOptions(
       baseUrl: kbaseUrl,
@@ -194,7 +218,7 @@ class MessageController extends GetxController {
       responseType: ResponseType.json,
     ));
     try {
-      final response = await _dio.get('/user/sendNotification?deviceToken=$deviceToken&messageTitle=${messageTitle.capitalize}&messageBody=$messageBody');
+      final response = await _dio.get('/chat/sendNotification?deviceToken=$deviceToken&messageTitle=${messageTitle.capitalize}&messageBody=$messageBody');
       if (response.statusCode == 200) {
         return true;
       } else {
@@ -204,32 +228,6 @@ class MessageController extends GetxController {
       print(e);
       return false;
     }
-  }
-
-  //for posting new message
-  Future<bool> postMessage({required String convId, required String senderId, required String senderName, required String messageText}) async {
-    String? _token = await _storage.read(key: _tokenKey);
-    Dio _dio = Dio(BaseOptions(
-      baseUrl: kbaseUrl,
-      connectTimeout: 20000,
-      receiveTimeout: 100000,
-      headers: {'x-access-token': _token},
-      responseType: ResponseType.json,
-    ));
-    try {
-      final response = await _dio.post(
-        '/chat/message',
-        data: {"conversationId": convId, "senderId": senderId, "senderName": senderName, "messageText": messageText, "timeSent": DateTime.now().toString()},
-      );
-      if (response.statusCode == 201) {
-        _messages.add(Message.fromJson(response.data));
-        update();
-        return true;
-      }
-    } catch (e) {
-      print(e);
-    }
-    return false;
   }
 
   //for getting all conversations based on the user id

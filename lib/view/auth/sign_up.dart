@@ -259,16 +259,18 @@ class _ProfileImgSelectScreenState extends State<ProfileImgSelectScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: CustomMaterialButton(
                   onPressed: () async {
-                    bool _result = await Get.find<AuthController>().signUpUser(
-                      widget.username,
-                      widget.email,
-                      widget.phoneNumber,
-                      widget.password,
-                      profileImgFile!,
-                      Get.find<NotificationController>().token.toString(),
-                    );
-                    if (_result) {
-                      Get.offAll(() => const HomeScreen(), transition: Transition.fade);
+                    if (profileImgFile != null) {
+                      bool _result = await Get.find<AuthController>().signUpUser(
+                        widget.username,
+                        widget.email,
+                        widget.phoneNumber,
+                        widget.password,
+                        profileImgFile!,
+                        Get.find<NotificationController>().token.toString(),
+                      );
+                      if (_result) {
+                        Get.offAll(() => const HomeScreen(), transition: Transition.fade);
+                      }
                     }
                   },
                   btnLabel: "Continue",
