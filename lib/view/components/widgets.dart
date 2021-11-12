@@ -11,7 +11,6 @@ import 'package:flutter_node_auth/controller/theme_controller.dart';
 import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
 import 'package:flutter_node_auth/view/app_setting_screens/languages_screen.dart';
-import 'package:flutter_node_auth/view/app_setting_screens/themes_screen.dart';
 import 'package:get/get.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -152,7 +151,7 @@ class CustomConversationWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(username, style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600)),
-                          Text(time, style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.black87)),
+                          Text(time, style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.white)),
                         ],
                       ),
                       SizedBox(height: size.height * 0.005),
@@ -279,8 +278,9 @@ Widget buildDrawer(ThemeController controller, BuildContext context) {
   return Drawer(
     child: SafeArea(
       child: Container(
-        decoration: BoxDecoration(
-          color: controller.defaultTheme['bgColor'],
+        decoration: const BoxDecoration(
+          // color: controller.defaultTheme['bgColor'],
+          color: Colors.white,
         ),
         child: Column(
           children: [
@@ -291,7 +291,25 @@ Widget buildDrawer(ThemeController controller, BuildContext context) {
               child: const Center(child: FlutterLogo(size: 42.0)),
             ),
             SizedBox(height: size.height * 0.02),
-            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+              decoration: const BoxDecoration(),
+              child: Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Icon(MdiIcons.themeLightDark, size: 16.0),
+                  SizedBox(width: size.width * 0.06),
+                  const Text('Dark Mode', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400)),
+                  const Spacer(),
+                  Switch(
+                    value: Get.find<ThemeController>().themeMode == ThemeMode.dark,
+                    onChanged: (value) {
+                      Get.find<ThemeController>().toggleThemeMode(value);
+                    },
+                  ),
+                ],
+              ),
+            ),
             Material(
               color: Colors.transparent,
               child: InkWell(
@@ -315,29 +333,8 @@ Widget buildDrawer(ThemeController controller, BuildContext context) {
                 ),
               ),
             ),
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ThemesScreen(),
-                      ));
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
-                  decoration: const BoxDecoration(),
-                  child: Row(
-                    children: [
-                      const Icon(MdiIcons.themeLightDark, size: 16.0),
-                      SizedBox(width: size.width * 0.06),
-                      const Text('Themes', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400)),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            const Spacer(),
+
             const Divider(),
             Material(
               color: Colors.transparent,
@@ -443,7 +440,9 @@ class ProductCard extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.only(left: 10.0),
               decoration: BoxDecoration(
-                color: themeController.defaultTheme['greyishColor'],
+                // color: themeController.defaultTheme['greyishColor'],
+                color: Colors.grey.shade300,
+
                 borderRadius: BorderRadius.only(bottomLeft: Radius.circular(radiusDouble), bottomRight: Radius.circular(radiusDouble)),
               ),
               child: Column(
@@ -451,11 +450,13 @@ class ProductCard extends StatelessWidget {
                 children: [
                   SizedBox(height: size.height * 0.01),
                   Text(products[index].name.capitalize.toString(),
-                      style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: themeController.defaultTheme['blackColor'])),
+                      // style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: themeController.defaultTheme['blackColor'])),
+                      style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black)),
                   SizedBox(height: size.height * 0.01),
                   Text(
                     '${formatPrice(products[index].price)} birr',
-                    style: TextStyle(fontSize: 15.0, color: themeController.defaultTheme['greyColor']),
+                    // style: TextStyle(fontSize: 15.0, color: themeController.defaultTheme['greyColor']),
+                    style: const TextStyle(fontSize: 15.0, color: Colors.grey),
                   ),
                   SizedBox(height: size.height * 0.02),
                 ],

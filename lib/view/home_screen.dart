@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_node_auth/controller/api_controller.dart';
 import 'package:flutter_node_auth/controller/product_controller.dart';
 import 'package:flutter_node_auth/controller/theme_controller.dart';
+import 'package:flutter_node_auth/themes/theme_constants.dart';
 import 'package:flutter_node_auth/view/components/widgets.dart';
 import 'package:flutter_node_auth/view/product/product_add.dart';
 import 'package:flutter_node_auth/view/product/product_detail.dart';
@@ -54,7 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
         child: Scaffold(
-          backgroundColor: controller.defaultTheme['bgColor'],
+          // backgroundColor: controller.defaultTheme['bgColor'],
+          // backgroundColor: Colors.white,
           drawer: buildDrawer(controller, context),
           floatingActionButton: Visibility(
             visible: _isVisible,
@@ -63,8 +65,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 Get.to(() => const ProductAdd(), transition: Transition.cupertino);
                 // Get.to(() => OnBoardingScreen(), transition: Transition.cupertino);
               },
-              backgroundColor: controller.defaultTheme['addButton'],
-              child: Icon(Icons.add, color: controller.defaultTheme['whiteColor']),
+              // backgroundColor: controller.defaultTheme['addButton'],
+              // backgroundColor: Colors.teal,
+              // child: Icon(Icons.add, color: controller.defaultTheme['whiteColor']),
+              // child: const Icon(Icons.add, color: Colors.white),
+              child: const Icon(Icons.add),
             ),
           ),
           body: SafeArea(
@@ -75,8 +80,12 @@ class _HomeScreenState extends State<HomeScreen> {
               enablePullDown: true,
               onLoading: _onLoading,
               onRefresh: _onRefresh,
-              header: const WaterDropHeader(
-                  refresh: CupertinoActivityIndicator(), complete: SizedBox.shrink(), completeDuration: Duration(milliseconds: 100), waterDropColor: Colors.teal),
+              header: WaterDropHeader(
+                refresh: const CupertinoActivityIndicator(),
+                complete: const SizedBox.shrink(),
+                completeDuration: const Duration(milliseconds: 100),
+                waterDropColor: Theme.of(context).primaryColor,
+              ),
               footer: CustomFooter(builder: buildLoaderFooter),
               child: CustomScrollView(
                 controller: _hideButtonController,
@@ -87,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       minHeight: size.height * 0.19,
                       maxHeight: size.height * 0.19,
                       child: Container(
-                        decoration: BoxDecoration(color: controller.defaultTheme['bgColor']),
+                        decoration: const BoxDecoration(),
                         child: Column(
                           children: [
                             SizedBox(height: size.height * 0.02),
@@ -95,12 +104,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               margin: const EdgeInsets.symmetric(horizontal: 10.0),
                               padding: const EdgeInsets.symmetric(horizontal: 10.0),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: Theme.of(context).primaryColor,
                                 borderRadius: BorderRadius.circular(10.0),
                                 boxShadow: [
-                                  controller.defaultTheme['bgColor'] == Colors.black87
-                                      ? BoxShadow(color: Colors.grey.shade700, offset: const Offset(2, 4), blurRadius: 10.0)
-                                      : BoxShadow(color: Colors.grey.shade300, offset: const Offset(2, 4), blurRadius: 10.0),
+                                  Theme.of(context).primaryColor == Colors.white
+                                      ? BoxShadow(color: Colors.grey.shade300, offset: const Offset(2, 4), blurRadius: 10.0)
+                                      : const BoxShadow(color: Colors.transparent, offset: Offset(2, 4), blurRadius: 10.0),
                                 ],
                               ),
                               child: BuildTopBar(
@@ -130,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               }
                                               _selectedIndex = index;
                                             });
-                                            print(_selectedIndex);
+                                            print("Category Index: " + _selectedIndex.toString());
                                           },
                                           child: Container(
                                             margin: index == 0 ? const EdgeInsets.only(left: 20.0, right: 10.0, bottom: 10.0) : const EdgeInsets.only(right: 10.0, bottom: 10.0),
@@ -139,10 +148,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                               borderRadius: BorderRadius.circular(5.0),
                                               color: _selectedIndex == 0 ? const Color(0xff444941) : const Color(0xfff2f2f2),
                                               border: _selectedIndex == 0
-                                                  ? Border.all(color: const Color(0xfff8f8f8), width: 1.0)
-                                                  : Border.all(color: Colors.grey.shade300, width: 1.0),
+                                                  ? Border.all(color: chip_border_Color_selected, width: 1.0)
+                                                  : Border.all(color: chip_border_Color_Unselected, width: 1.0),
                                             ),
-                                            child: Center(child: Text('All', style: TextStyle(color: _selectedIndex == 0 ? Colors.white : Colors.black))),
+                                            child: Center(
+                                              child: Text(
+                                                'All',
+                                                style: TextStyle(color: _selectedIndex == 0 ? Colors.white : Colors.black),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         Container(

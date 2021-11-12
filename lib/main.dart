@@ -12,6 +12,7 @@ import 'package:flutter_node_auth/controller/lang_controller.dart';
 import 'package:flutter_node_auth/controller/message_controller.dart';
 import 'package:flutter_node_auth/controller/product_controller.dart';
 import 'package:flutter_node_auth/controller/theme_controller.dart';
+import 'package:flutter_node_auth/themes/theme_constants.dart';
 import 'package:flutter_node_auth/utils/strings.dart';
 import 'package:flutter_node_auth/view/root.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
@@ -100,7 +101,9 @@ class MyApp extends StatelessWidget {
         fallbackLocale: const Locale('en', 'US'),
         debugShowCheckedModeBanner: false,
         title: kappName,
-        theme: controller.defaultThemeData,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: Get.find<ThemeController>().themeMode,
         home: const Root(),
       ),
     );
