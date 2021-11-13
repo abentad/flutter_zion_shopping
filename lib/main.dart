@@ -39,8 +39,8 @@ int createUniqueId() {
 //
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  //TODO: fix sending two notifications when app is in background or terminated
-  createBasicNotificaton(title: message.notification!.title.toString(), body: message.notification!.body.toString());
+//  // : fix sending two notifications when app is in background or terminated
+//  // createBasicNotificaton(title: message.notification!.title.toString(), body: message.notification!.body.toString());
   print("Handling a background message: ${message.messageId}");
 }
 
@@ -71,6 +71,7 @@ void main() async {
     );
     await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
   }
+//
 
   MobileAds.instance.initialize();
   //system orientation and statusbar color

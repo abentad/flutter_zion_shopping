@@ -14,7 +14,6 @@ class NotificationController extends GetxController {
   _getToken() async {
     _token = await FirebaseMessaging.instance.getToken();
     print("Token " + _token.toString());
-    print(_token!.length);
   }
 
   _setupNotificationListener() {
@@ -29,17 +28,20 @@ class NotificationController extends GetxController {
       print(notification!.title);
       print(notification.body.toString());
     });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
+    // FirebaseMessaging.onBackgroundMessage((RemoteMessage message) {return null});
   }
 
   Future<void> createBasicNotificaton({required String title, required String body}) async {
     await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-      id: createUniqueId(),
-      channelKey: 'basic_channel',
-      title: title.capitalize,
-      body: body,
-      notificationLayout: NotificationLayout.Default,
-    ));
+      content: NotificationContent(
+        id: createUniqueId(),
+        channelKey: 'basic_channel',
+        title: title.capitalize,
+        body: body,
+        notificationLayout: NotificationLayout.Default,
+      ),
+    );
   }
 
   int createUniqueId() {

@@ -11,7 +11,6 @@ import 'package:flutter_node_auth/model/product.dart';
 import 'package:flutter_node_auth/utils/app_helpers.dart';
 import 'package:get/get.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
-import 'package:get_time_ago/get_time_ago.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ChatScreen extends StatefulWidget {

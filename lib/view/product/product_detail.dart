@@ -402,8 +402,8 @@ class _ProductDetailState extends State<ProductDetail> {
   }
 
   void messageBtn() async {
-    //TODO: after getting into the chatscreen load messages from the conversationId on initstate
-    //TODO: everytime you load messages clear old messages that were there before them
+    //  // TODO: after getting into the chatscreen load messages from the conversationId on initstate
+    //  // TODO: everytime you load messages clear old messages that were there before them
 
     Map<String, dynamic> foundConv = await getter.Get.find<MessageController>().findConversation(
       senderId: getter.Get.find<AuthController>().currentUser!.userId.toString(),

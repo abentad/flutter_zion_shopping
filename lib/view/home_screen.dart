@@ -148,8 +148,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                               borderRadius: BorderRadius.circular(5.0),
                                               color: _selectedIndex == 0 ? const Color(0xff444941) : const Color(0xfff2f2f2),
                                               border: _selectedIndex == 0
-                                                  ? Border.all(color: chip_border_Color_selected, width: 1.0)
-                                                  : Border.all(color: chip_border_Color_Unselected, width: 1.0),
+                                                  ? Border.all(color: chipBorderColorSelected, width: 1.0)
+                                                  : Border.all(color: chipBorderColorUnselected, width: 1.0),
                                             ),
                                             child: Center(
                                               child: Text(
