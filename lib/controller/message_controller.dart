@@ -2,6 +2,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_node_auth/constants/api_path.dart';
 import 'package:flutter_node_auth/controller/auth_controller.dart';
+import 'package:flutter_node_auth/controller/notification_controller.dart';
 import 'package:flutter_node_auth/model/conversation.dart';
 import 'package:flutter_node_auth/model/message.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -132,7 +133,7 @@ class MessageController extends GetxController {
       if (response.statusCode == 201) {
         _messages.add(Message.fromJson(response.data['msg']));
         if (response.data['dvt'] != "none") {
-          bool notificationResult = await sendNotificationUsingDeviceToken(response.data['dvt'], senderName, messageText);
+          bool notificationResult = await Get.find<NotificationController>().sendNotificationUsingDeviceToken(response.data['dvt'], senderName, messageText);
           if (notificationResult) {
             print("***notification sent successfully");
           } else {
@@ -148,86 +149,6 @@ class MessageController extends GetxController {
       print(e);
     }
     return false;
-  }
-
-  //update conversation info
-  Future<bool> updateConversationInfo(String convId, String lastMessage, String lastMessageSenderId) async {
-    // String? _token = await _storage.read(key: _tokenKey);
-    Dio _dio = Dio(BaseOptions(
-      baseUrl: kbaseUrl,
-      connectTimeout: 20000,
-      receiveTimeout: 100000,
-      responseType: ResponseType.json,
-    ));
-    try {
-      final response = await _dio.put(
-        '/chat/conv/updlmsg',
-        data: {
-          "convId": convId,
-          "lastMessage": lastMessage,
-          "lastMessageSenderId": lastMessageSenderId,
-          "lastMessageTimeSent": DateTime.now().toString(),
-        },
-      );
-      if (response.statusCode == 200) {
-        return true;
-      }
-    } catch (e) {
-      print(e);
-      return false;
-    }
-    return false;
-  }
-
-  //for finding device token by using the users id
-  Future<Map<String, dynamic>> findDeviceToken(String userId) async {
-    String? _token = await _storage.read(key: _tokenKey);
-    Dio _dio = Dio(BaseOptions(
-      baseUrl: kbaseUrl,
-      connectTimeout: 20000,
-      receiveTimeout: 100000,
-      headers: {'x-access-token': _token},
-      responseType: ResponseType.json,
-    ));
-    try {
-      final response = await _dio.get('/chat/getDeviceToken?userId=$userId');
-      // print('finding token for userid: $userId');
-      if (response.statusCode == 200) {
-        return {"result": true, "deviceToken": response.data['deviceToken']};
-      } else if (response.statusCode == 201) {
-        return {"result": true, "deviceToken": ""};
-      }
-    } catch (e) {
-      print(e);
-      print('failed finding device token');
-      return {"result": false};
-    }
-    print('failed finding device token');
-    return {"result": false};
-  }
-
-  //for sending notification by using device token
-  Future<bool> sendNotificationUsingDeviceToken(String deviceToken, String messageTitle, String messageBody) async {
-    // print('send notification called using:\ndeviceToken: $deviceToken\nmessageTitle: $messageTitle\nmessagebody: $messageBody');
-    String? _token = await _storage.read(key: _tokenKey);
-    Dio _dio = Dio(BaseOptions(
-      baseUrl: kbaseUrl,
-      connectTimeout: 20000,
-      receiveTimeout: 100000,
-      headers: {'x-access-token': _token},
-      responseType: ResponseType.json,
-    ));
-    try {
-      final response = await _dio.get('/chat/sendNotification?deviceToken=$deviceToken&messageTitle=${messageTitle.capitalize}&messageBody=$messageBody');
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      print(e);
-      return false;
-    }
   }
 
   //for getting all conversations based on the user id

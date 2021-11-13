@@ -21,21 +21,6 @@ import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-Future<void> createBasicNotificaton({required String title, required String body}) async {
-  await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-    id: createUniqueId(),
-    channelKey: 'basic_channel',
-    title: title,
-    body: body,
-    notificationLayout: NotificationLayout.Default,
-  ));
-}
-
-int createUniqueId() {
-  return DateTime.now().millisecond;
-}
-
 //
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -47,45 +32,26 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  if (!kIsWeb) {
-    AwesomeNotifications().initialize(
-      'resource://drawable/res_notification',
-      [
-        NotificationChannel(
-          channelKey: 'basic_channel',
-          channelName: 'Basic Channel',
-          defaultColor: Colors.teal,
-          importance: NotificationImportance.Max,
-          channelShowBadge: true,
-          ledColor: Colors.blue,
-          playSound: true,
-          defaultPrivacy: NotificationPrivacy.Public,
-          defaultRingtoneType: DefaultRingtoneType.Notification,
-          enableVibration: true,
-          enableLights: true,
-          ledOffMs: 800,
-          ledOnMs: 800,
-        ),
-      ],
-    );
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
-  }
-//
-
   MobileAds.instance.initialize();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   //system orientation and statusbar color
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.white, statusBarIconBrightness: Brightness.dark));
-  //disable screenshot or screen recording
-  await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+  //get controllers
+  Get.put<NotificationController>(NotificationController());
   Get.put<LanguageController>(LanguageController());
   Get.put<AuthController>(AuthController());
   Get.put<ApiController>(ApiController());
   Get.put<ThemeController>(ThemeController());
   Get.put<ProductController>(ProductController());
-  Get.put<NotificationController>(NotificationController());
   Get.put<MessageController>(MessageController());
+
+  if (!kIsWeb) {
+    AwesomeNotifications().initialize('resource://drawable/res_notification', Get.find<NotificationController>().notificationChannels);
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: false, sound: true);
+  }
+  //disable screenshot or screen recording
+  await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
 
   runApp(const MyApp());
 }
