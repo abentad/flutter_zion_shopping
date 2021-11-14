@@ -47,7 +47,7 @@ void main() async {
   Get.put<MessageController>(MessageController());
 
   if (!kIsWeb) {
-    AwesomeNotifications().initialize('resource://drawable/res_notification', Get.find<NotificationController>().notificationChannels);
+    AwesomeNotifications().initialize(null, Get.find<NotificationController>().notificationChannels);
     await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: false, sound: true);
   }
   //disable screenshot or screen recording
