@@ -56,17 +56,23 @@ class NotificationController extends GetxController {
 
   //for sending notification by using device token
   Future<bool> sendNotificationUsingDeviceToken(String deviceToken, String messageTitle, String messageBody) async {
-    // print('send notification called using:\ndeviceToken: $deviceToken\nmessageTitle: $messageTitle\nmessagebody: $messageBody');
-    String? _token = await _storage.read(key: _tokenKey);
+    String _serverKey = "AAAA7GChulM:APA91bF8YKCfXwWHbvuxg5vLcXqfSJ2qgRKIZngx7vxzwxHiI-a0L2onsXGbxU5LSg_S2RjYOgGn6VpMu0I1BCipG_Ln4Ceqe5iRQraPWlXv8nVeO0LsgdzE6SgMKyD2plMYfUsa9ERw";
     Dio _dio = Dio(BaseOptions(
-      baseUrl: kbaseUrl,
+      baseUrl: "https://fcm.googleapis.com",
       connectTimeout: 20000,
       receiveTimeout: 100000,
-      headers: {'x-access-token': _token},
+      headers: {"Content-Type": "application/json", "Authorization": "key=$_serverKey"},
       responseType: ResponseType.json,
     ));
     try {
-      final response = await _dio.get('/chat/sendNotification?deviceToken=$deviceToken&messageTitle=${messageTitle.capitalize}&messageBody=$messageBody');
+      final response = await _dio.post(
+        '/fcm/send',
+        data: {
+          "to": deviceToken,
+          "notification": {"title": messageTitle, "body": messageBody, "mutable_content": true},
+          // "data": {"url": "<url of media image>", "dl": "<deeplink action on tap of notification>"}
+        },
+      );
       if (response.statusCode == 200) {
         return true;
       } else {
